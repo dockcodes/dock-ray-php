@@ -292,6 +292,18 @@ final class Event
         return $this->request;
     }
 
+    private string $platform = 'php';
+
+    public function getPlatform(): string
+    {
+        return $this->platform;
+    }
+
+    public function setPlatform(string $platform): void
+    {
+        $this->platform = $platform;
+    }
+
     public function setRequest(array $request): void
     {
         $this->request = $request;

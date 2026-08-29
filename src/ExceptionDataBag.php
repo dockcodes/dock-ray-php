@@ -34,6 +34,19 @@ final class ExceptionDataBag
         $this->mechanism = $mechanism;
     }
 
+    /**
+     * Błąd, który nie jest wyjątkiem PHP — zgłoszenie z przeglądarki albo
+     * z innego środowiska uruchomieniowego. Typ jest wtedy nazwą z tamtej
+     * strony (`TypeError`, `ReferenceError`), a nie klasą PHP.
+     */
+    public static function create(string $type, string $value, ?Stacktrace $stacktrace = null, ?ExceptionMechanism $mechanism = null): self
+    {
+        $instance = new self(new \RuntimeException($value), $stacktrace, $mechanism);
+        $instance->type = $type;
+
+        return $instance;
+    }
+
     public function getType(): string
     {
         return $this->type;

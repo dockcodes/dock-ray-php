@@ -6,10 +6,7 @@ namespace Dock\Thor\Tracing;
 
 final class TraceId implements \Stringable
 {
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {
@@ -22,7 +19,7 @@ final class TraceId implements \Stringable
 
     public static function generate(): self
     {
-        return new self(str_replace('-', '', uuid_create(UUID_TYPE_RANDOM)));
+        return new self(bin2hex(random_bytes(16)));
     }
 
     public function __toString(): string

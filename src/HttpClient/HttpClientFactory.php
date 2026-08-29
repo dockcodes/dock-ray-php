@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace Dock\Thor\HttpClient;
 
+use Dock\Thor\HttpClient\Authentication\ThorAuthentication;
+use Dock\Thor\HttpClient\Plugin\GzipEncoderPlugin;
+use Dock\Thor\Options;
 use GuzzleHttp\RequestOptions as GuzzleHttpClientOptions;
-use Http\Adapter\Guzzle6\Client as GuzzleHttpClient;
+use Http\Adapter\Guzzle7\Client as GuzzleHttpClient;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
 use Http\Client\Common\Plugin\DecoderPlugin;
 use Http\Client\Common\Plugin\ErrorPlugin;
@@ -15,12 +18,7 @@ use Http\Client\Common\PluginClient;
 use Http\Client\Curl\Client as CurlHttpClient;
 use Http\Client\HttpAsyncClient as HttpAsyncClientInterface;
 use Http\Discovery\HttpAsyncClientDiscovery;
-use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\UriFactoryInterface;
-use Dock\Thor\HttpClient\Authentication\ThorAuthentication;
-use Dock\Thor\HttpClient\Plugin\GzipEncoderPlugin;
-use Dock\Thor\Options;
 use Symfony\Component\HttpClient\HttpClient as SymfonyHttpClient;
 use Symfony\Component\HttpClient\HttplugClient as SymfonyHttplugClient;
 
@@ -30,108 +28,82 @@ final class HttpClientFactory implements HttpClientFactoryInterface
 
     private const DEFAULT_HTTP_CONNECT_TIMEOUT = 2;
 
-    /**
-     * @var StreamFactoryInterface
-     */
-    private $streamFactory;
-
-    /**
-     * @var HttpAsyncClientInterface|null
-     */
-    private $httpClient = null;
-
-    /**
-     * @var string
-     */
-    private $sdkIdentifier;
-
-    /**
-     * @var string
-     */
-    private $sdkVersion;
-
     public function __construct(
-        UriFactoryInterface $uriFactory,
-        ResponseFactoryInterface $responseFactory,
-        StreamFactoryInterface $streamFactory,
-        ?HttpAsyncClientInterface $httpClient,
-        string $sdkIdentifier,
-        string $sdkVersion
-    ) {
-        $this->streamFactory = $streamFactory;
-        $this->httpClient = $httpClient;
-        $this->sdkIdentifier = $sdkIdentifier;
-        $this->sdkVersion = $sdkVersion;
-    }
+        private readonly StreamFactoryInterface $streamFactory,
+        private readonly ?HttpAsyncClientInterface $httpClient,
+        private readonly string $sdkIdentifier,
+        private readonly string $sdkVersion,
+    ) {}
 
     public function create(Options $options): HttpAsyncClientInterface
     {
         if (null === $options->getAuthData()) {
-            throw new \RuntimeException('Cannot create an HTTP client without the Thor Auth Data set in the options.');
+            throw new \RuntimeException('Cannot create an HTTP client without the DockTHOR credentials set in the options.');
         }
 
-        $httpClient = $this->httpClient;
-
-        if (null !== $httpClient && null !== $options->getHttpProxy()) {
+        if (null !== $this->httpClient && null !== $options->getHttpProxy()) {
             throw new \RuntimeException('The "http_proxy" option does not work together with a custom HTTP client.');
         }
 
-        if (null === $httpClient) {
-            if (class_exists(SymfonyHttplugClient::class)) {
-                $symfonyConfig = [
-                    'max_duration' => self::DEFAULT_HTTP_TIMEOUT,
-                ];
-
-                if (null !== $options->getHttpProxy()) {
-                    $symfonyConfig['proxy'] = $options->getHttpProxy();
-                }
-
-                $httpClient = new SymfonyHttplugClient(
-                    SymfonyHttpClient::create($symfonyConfig)
-                );
-            } elseif (class_exists(GuzzleHttpClient::class)) {
-                $guzzleConfig = [
-                    GuzzleHttpClientOptions::TIMEOUT => self::DEFAULT_HTTP_TIMEOUT,
-                    GuzzleHttpClientOptions::CONNECT_TIMEOUT => self::DEFAULT_HTTP_CONNECT_TIMEOUT,
-                ];
-
-                if (null !== $options->getHttpProxy()) {
-                    $guzzleConfig[GuzzleHttpClientOptions::PROXY] = $options->getHttpProxy();
-                }
-
-                $httpClient = GuzzleHttpClient::createWithConfig($guzzleConfig);
-            } elseif (class_exists(CurlHttpClient::class)) {
-                $curlConfig = [
-                    \CURLOPT_TIMEOUT => self::DEFAULT_HTTP_TIMEOUT,
-                    \CURLOPT_CONNECTTIMEOUT => self::DEFAULT_HTTP_CONNECT_TIMEOUT,
-                ];
-
-                if (null !== $options->getHttpProxy()) {
-                    $curlConfig[\CURLOPT_PROXY] = $options->getHttpProxy();
-                }
-
-                $httpClient = new CurlHttpClient(null, null, $curlConfig);
-            } elseif (null !== $options->getHttpProxy()) {
-                throw new \RuntimeException('The "http_proxy" option requires either the "php-http/curl-client" or the "php-http/guzzle6-adapter" package to be installed.');
-            }
-        }
-
-        if (null === $httpClient) {
-            $httpClient = HttpAsyncClientDiscovery::find();
-        }
-
-        $httpClientPlugins = [
+        $plugins = [
             new HeaderSetPlugin(['User-Agent' => $this->sdkIdentifier . '/' . $this->sdkVersion]),
-            new AuthenticationPlugin(new ThorAuthentication($options, $this->sdkIdentifier, $this->sdkVersion)),
+            new AuthenticationPlugin(new ThorAuthentication($options)),
             new RetryPlugin(['retries' => $options->getSendAttempts()]),
             new ErrorPlugin(),
         ];
 
         if ($options->isCompressionEnabled()) {
-            $httpClientPlugins[] = new GzipEncoderPlugin($this->streamFactory);
-            $httpClientPlugins[] = new DecoderPlugin();
+            $plugins[] = new GzipEncoderPlugin($this->streamFactory);
+            $plugins[] = new DecoderPlugin();
         }
 
-        return new PluginClient($httpClient, $httpClientPlugins);
+        return new PluginClient($this->httpClient ?? $this->discoverHttpClient($options), $plugins);
+    }
+
+    private function discoverHttpClient(Options $options): HttpAsyncClientInterface
+    {
+        $proxy = $options->getHttpProxy();
+
+        if (class_exists(SymfonyHttplugClient::class)) {
+            $config = ['max_duration' => self::DEFAULT_HTTP_TIMEOUT];
+
+            if (null !== $proxy) {
+                $config['proxy'] = $proxy;
+            }
+
+            return new SymfonyHttplugClient(SymfonyHttpClient::create($config));
+        }
+
+        if (class_exists(GuzzleHttpClient::class)) {
+            $config = [
+                GuzzleHttpClientOptions::TIMEOUT => self::DEFAULT_HTTP_TIMEOUT,
+                GuzzleHttpClientOptions::CONNECT_TIMEOUT => self::DEFAULT_HTTP_CONNECT_TIMEOUT,
+            ];
+
+            if (null !== $proxy) {
+                $config[GuzzleHttpClientOptions::PROXY] = $proxy;
+            }
+
+            return GuzzleHttpClient::createWithConfig($config);
+        }
+
+        if (class_exists(CurlHttpClient::class)) {
+            $config = [
+                \CURLOPT_TIMEOUT => self::DEFAULT_HTTP_TIMEOUT,
+                \CURLOPT_CONNECTTIMEOUT => self::DEFAULT_HTTP_CONNECT_TIMEOUT,
+            ];
+
+            if (null !== $proxy) {
+                $config[\CURLOPT_PROXY] = $proxy;
+            }
+
+            return new CurlHttpClient(null, null, $config);
+        }
+
+        if (null !== $proxy) {
+            throw new \RuntimeException('The "http_proxy" option requires either the "php-http/curl-client" or the "php-http/guzzle7-adapter" package to be installed.');
+        }
+
+        return HttpAsyncClientDiscovery::find();
     }
 }

@@ -6,10 +6,7 @@ namespace Dock\Thor\Tracing;
 
 final class SpanId implements \Stringable
 {
-    /**
-     * @var string
-     */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {
@@ -22,7 +19,7 @@ final class SpanId implements \Stringable
 
     public static function generate(): self
     {
-        return new self(substr(str_replace('-', '', uuid_create(UUID_TYPE_RANDOM)), 0, 16));
+        return new self(bin2hex(random_bytes(8)));
     }
 
     public function isEqualTo(self $other): bool

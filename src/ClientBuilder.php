@@ -59,12 +59,21 @@ final class ClientBuilder implements ClientBuilderInterface
     public function __construct(?Options $options = null)
     {
         $this->options = $options ?? new Options();
-        $this->sdkVersion = PrettyVersions::getVersion('dockcodes/dock-thor')->getPrettyVersion();
+        $this->sdkVersion = self::detectSdkVersion();
     }
 
     public static function create(array $options = []): ClientBuilderInterface
     {
         return new self(new Options($options));
+    }
+
+    private static function detectSdkVersion(): string
+    {
+        try {
+            return PrettyVersions::getVersion('dockcodes/dock-thor')->getPrettyVersion();
+        } catch (\Throwable) {
+            return Client::SDK_VERSION;
+        }
     }
 
     public function getOptions(): Options
@@ -135,19 +144,11 @@ final class ClientBuilder implements ClientBuilderInterface
     private function createDefaultTransportFactory(): DefaultTransportFactory
     {
         $streamFactory = Psr17FactoryDiscovery::findStreamFactory();
-        $httpClientFactory = new HttpClientFactory(
-            Psr17FactoryDiscovery::findUrlFactory(),
-            Psr17FactoryDiscovery::findResponseFactory(),
-            $streamFactory,
-            null,
-            $this->sdkIdentifier,
-            $this->sdkVersion
-        );
 
         return new DefaultTransportFactory(
             $streamFactory,
             Psr17FactoryDiscovery::findRequestFactory(),
-            $httpClientFactory,
+            new HttpClientFactory($streamFactory, null, $this->sdkIdentifier, $this->sdkVersion),
             $this->logger
         );
     }

@@ -4,17 +4,16 @@ declare(strict_types=1);
 
 namespace Dock\Thor\Transport;
 
-use GuzzleHttp\Promise\FulfilledPromise;
-use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Promise\RejectedPromise;
-use Http\Client\HttpAsyncClient as HttpAsyncClientInterface;
 use Dock\Thor\Event;
 use Dock\Thor\EventType;
 use Dock\Thor\Options;
 use Dock\Thor\Response;
 use Dock\Thor\ResponseStatus;
 use Dock\Thor\Serializer\PayloadSerializerInterface;
-use Dock\Thor\Util\JSON;
+use GuzzleHttp\Promise\FulfilledPromise;
+use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\RejectedPromise;
+use Http\Client\HttpAsyncClient as HttpAsyncClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -23,77 +22,41 @@ use Psr\Log\NullLogger;
 
 final class HttpTransport implements TransportInterface
 {
-    /**
-     * @var Options
-     */
-    private $options;
-
-    /**
-     * @var HttpAsyncClientInterface
-     */
-    private $httpClient;
-
-    /**
-     * @var StreamFactoryInterface
-     */
-    private $streamFactory;
-
-    /**
-     * @var RequestFactoryInterface
-     */
-    private $requestFactory;
-
-    /**
-     * @var PayloadSerializerInterface
-     */
-    private $payloadSerializer;
-
-    /**
-     * @var LoggerInterface
-     */
-    private $logger;
+    private LoggerInterface $logger;
 
     public function __construct(
-        Options                    $options,
-        HttpAsyncClientInterface   $httpClient,
-        StreamFactoryInterface     $streamFactory,
-        RequestFactoryInterface    $requestFactory,
-        PayloadSerializerInterface $payloadSerializer,
-        ?LoggerInterface           $logger = null
-    )
-    {
-        $this->options = $options;
-        $this->httpClient = $httpClient;
-        $this->streamFactory = $streamFactory;
-        $this->requestFactory = $requestFactory;
-        $this->payloadSerializer = $payloadSerializer;
+        private readonly Options $options,
+        private readonly HttpAsyncClientInterface $httpClient,
+        private readonly StreamFactoryInterface $streamFactory,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly PayloadSerializerInterface $payloadSerializer,
+        ?LoggerInterface $logger = null,
+    ) {
         $this->logger = $logger ?? new NullLogger();
     }
 
     public function send(Event $event): PromiseInterface
     {
         $authData = $this->options->getAuthData();
-        $content = $this->payloadSerializer->serialize($event);
-        $request = null;
-        if (!empty($authData->getToken()) && !empty($authData->getPrivateKey())) {
-            if (EventType::transaction() === $event->getType()) {
-                $request = $this->requestFactory->createRequest('POST', $authData->getTransactionApiEndpointUrl())
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withHeader('Authorization', 'Bearer '.$authData->getPrivateKey())
-                    ->withBody($this->streamFactory->createStream($content));
-            } else {
-                $request = $this->requestFactory->createRequest('POST', $authData->getProjectApiEndpointUrl())
-                    ->withHeader('Content-Type', 'application/json')
-                    ->withHeader('Authorization', 'Bearer '.$authData->getPrivateKey())
-                    ->withBody($this->streamFactory->createStream($content));
-            }
+
+        if (null === $authData) {
+            return new FulfilledPromise(new Response(ResponseStatus::skipped(), $event));
         }
+
+        $endpoint = EventType::transaction() === $event->getType()
+            ? $authData->getTransactionApiEndpointUrl()
+            : $authData->getProjectApiEndpointUrl();
+
+        $request = $this->requestFactory->createRequest('POST', $endpoint)
+            ->withHeader('Content-Type', 'application/json')
+            ->withBody($this->streamFactory->createStream($this->payloadSerializer->serialize($event)));
+
         try {
             /** @var ResponseInterface $response */
             $response = $this->httpClient->sendAsyncRequest($request)->wait();
         } catch (\Throwable $exception) {
             $this->logger->error(
-                sprintf('Failed to send the event to Thor. Reason: "%s".', $exception->getMessage()),
+                sprintf('Failed to send the event to DockTHOR. Reason: "%s".', $exception->getMessage()),
                 ['exception' => $exception, 'event' => $event]
             );
 

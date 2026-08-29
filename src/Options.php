@@ -11,15 +11,9 @@ final class Options
 {
     public const DEFAULT_MAX_BREADCRUMBS = 100;
 
-    /**
-     * @var array
-     */
-    private $options = [];
+    private array $options;
 
-    /**
-     * @var OptionsResolver
-     */
-    private $resolver;
+    private OptionsResolver $resolver;
 
     public function __construct(array $options = [])
     {
@@ -37,9 +31,7 @@ final class Options
 
     public function setSendAttempts(int $attemptsCount): void
     {
-        $options = array_merge($this->options, ['send_attempts' => $attemptsCount]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('send_attempts', $attemptsCount);
     }
 
     public function getPrefixes(): array
@@ -49,9 +41,7 @@ final class Options
 
     public function setPrefixes(array $prefixes): void
     {
-        $options = array_merge($this->options, ['prefixes' => $prefixes]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('prefixes', $prefixes);
     }
 
     public function getSampleRate(): float
@@ -61,9 +51,7 @@ final class Options
 
     public function setSampleRate(float $sampleRate): void
     {
-        $options = array_merge($this->options, ['sample_rate' => $sampleRate]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('sample_rate', $sampleRate);
     }
 
     public function getTracesSampleRate(): float
@@ -73,14 +61,12 @@ final class Options
 
     public function setTracesSampleRate(float $sampleRate): void
     {
-        $options = array_merge($this->options, ['traces_sample_rate' => $sampleRate]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('traces_sample_rate', $sampleRate);
     }
 
     public function isTracingEnabled(): bool
     {
-        return 0 != $this->options['traces_sample_rate'] || null !== $this->options['traces_sampler'];
+        return 0.0 !== (float) $this->options['traces_sample_rate'] || null !== $this->options['traces_sampler'];
     }
 
     public function shouldAttachStacktrace(): bool
@@ -90,9 +76,7 @@ final class Options
 
     public function setAttachStacktrace(bool $enable): void
     {
-        $options = array_merge($this->options, ['attach_stacktrace' => $enable]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('attach_stacktrace', $enable);
     }
 
     public function getContextLines(): ?int
@@ -102,9 +86,17 @@ final class Options
 
     public function setContextLines(?int $contextLines): void
     {
-        $options = array_merge($this->options, ['context_lines' => $contextLines]);
+        $this->set('context_lines', $contextLines);
+    }
 
-        $this->options = $this->resolver->resolve($options);
+    public function shouldSendAfterResponse(): bool
+    {
+        return $this->options['send_after_response'];
+    }
+
+    public function setSendAfterResponse(bool $enabled): void
+    {
+        $this->set('send_after_response', $enabled);
     }
 
     public function isCompressionEnabled(): bool
@@ -114,9 +106,7 @@ final class Options
 
     public function setEnableCompression(bool $enabled): void
     {
-        $options = array_merge($this->options, ['enable_compression' => $enabled]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('enable_compression', $enabled);
     }
 
     public function getEnvironment(): ?string
@@ -126,9 +116,7 @@ final class Options
 
     public function setEnvironment(?string $environment): void
     {
-        $options = array_merge($this->options, ['environment' => $environment]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('environment', $environment);
     }
 
     public function getInAppExcludedPaths(): array
@@ -138,9 +126,7 @@ final class Options
 
     public function setInAppExcludedPaths(array $paths): void
     {
-        $options = array_merge($this->options, ['in_app_exclude' => $paths]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('in_app_exclude', $paths);
     }
 
     public function getInAppIncludedPaths(): array
@@ -150,9 +136,7 @@ final class Options
 
     public function setInAppIncludedPaths(array $paths): void
     {
-        $options = array_merge($this->options, ['in_app_include' => $paths]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('in_app_include', $paths);
     }
 
     public function getRelease(): ?string
@@ -162,9 +146,12 @@ final class Options
 
     public function setRelease(?string $release): void
     {
-        $options = array_merge($this->options, ['release' => $release]);
+        $this->set('release', $release);
+    }
 
-        $this->options = $this->resolver->resolve($options);
+    public function getServerUrl(): string
+    {
+        return $this->options['url'];
     }
 
     public function getAuthData(): ?AuthData
@@ -172,16 +159,9 @@ final class Options
         return $this->options['auth_data'];
     }
 
-    public function getTags(): array
+    public function setAuthData(?AuthData $authData): void
     {
-        return $this->options['tags'];
-    }
-
-    public function setTags(array $tags): void
-    {
-        $options = array_merge($this->options, ['tags' => $tags]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('auth_data', $authData);
     }
 
     public function getLogger(): string
@@ -191,9 +171,7 @@ final class Options
 
     public function setLogger(string $logger): void
     {
-        $options = array_merge($this->options, ['logger' => $logger]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('logger', $logger);
     }
 
     public function getServerName(): string
@@ -203,9 +181,7 @@ final class Options
 
     public function setServerName(string $serverName): void
     {
-        $options = array_merge($this->options, ['server_name' => $serverName]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('server_name', $serverName);
     }
 
     public function getBeforeSendCallback(): callable
@@ -215,9 +191,7 @@ final class Options
 
     public function setBeforeSendCallback(callable $callback): void
     {
-        $options = array_merge($this->options, ['before_send' => $callback]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('before_send', $callback);
     }
 
     public function getErrorTypes(): int
@@ -227,9 +201,7 @@ final class Options
 
     public function setErrorTypes(int $errorTypes): void
     {
-        $options = array_merge($this->options, ['error_types' => $errorTypes]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('error_types', $errorTypes);
     }
 
     public function getMaxBreadcrumbs(): int
@@ -239,9 +211,7 @@ final class Options
 
     public function setMaxBreadcrumbs(int $maxBreadcrumbs): void
     {
-        $options = array_merge($this->options, ['max_breadcrumbs' => $maxBreadcrumbs]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('max_breadcrumbs', $maxBreadcrumbs);
     }
 
     public function getBeforeBreadcrumbCallback(): callable
@@ -251,21 +221,17 @@ final class Options
 
     public function setBeforeBreadcrumbCallback(callable $callback): void
     {
-        $options = array_merge($this->options, ['before_breadcrumb' => $callback]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('before_breadcrumb', $callback);
     }
 
-    public function setIntegrations($integrations): void
-    {
-        $options = array_merge($this->options, ['integrations' => $integrations]);
-
-        $this->options = $this->resolver->resolve($options);
-    }
-
-    public function getIntegrations()
+    public function getIntegrations(): array|callable
     {
         return $this->options['integrations'];
+    }
+
+    public function setIntegrations(array|callable $integrations): void
+    {
+        $this->set('integrations', $integrations);
     }
 
     public function shouldSendDefaultPii(): bool
@@ -275,9 +241,7 @@ final class Options
 
     public function setSendDefaultPii(bool $enable): void
     {
-        $options = array_merge($this->options, ['send_default_pii' => $enable]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('send_default_pii', $enable);
     }
 
     public function hasDefaultIntegrations(): bool
@@ -287,9 +251,7 @@ final class Options
 
     public function setDefaultIntegrations(bool $enable): void
     {
-        $options = array_merge($this->options, ['default_integrations' => $enable]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('default_integrations', $enable);
     }
 
     public function getMaxValueLength(): int
@@ -299,9 +261,7 @@ final class Options
 
     public function setMaxValueLength(int $maxValueLength): void
     {
-        $options = array_merge($this->options, ['max_value_length' => $maxValueLength]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('max_value_length', $maxValueLength);
     }
 
     public function getHttpProxy(): ?string
@@ -311,9 +271,7 @@ final class Options
 
     public function setHttpProxy(?string $httpProxy): void
     {
-        $options = array_merge($this->options, ['http_proxy' => $httpProxy]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('http_proxy', $httpProxy);
     }
 
     public function shouldCaptureSilencedErrors(): bool
@@ -323,9 +281,7 @@ final class Options
 
     public function setCaptureSilencedErrors(bool $shouldCapture): void
     {
-        $options = array_merge($this->options, ['capture_silenced_errors' => $shouldCapture]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('capture_silenced_errors', $shouldCapture);
     }
 
     public function getMaxRequestBodySize(): string
@@ -335,9 +291,7 @@ final class Options
 
     public function setMaxRequestBodySize(string $maxRequestBodySize): void
     {
-        $options = array_merge($this->options, ['max_request_body_size' => $maxRequestBodySize]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('max_request_body_size', $maxRequestBodySize);
     }
 
     public function getClassSerializers(): array
@@ -347,9 +301,7 @@ final class Options
 
     public function setClassSerializers(array $serializers): void
     {
-        $options = array_merge($this->options, ['class_serializers' => $serializers]);
-
-        $this->options = $this->resolver->resolve($options);
+        $this->set('class_serializers', $serializers);
     }
 
     public function getTracesSampler(): ?callable
@@ -359,14 +311,21 @@ final class Options
 
     public function setTracesSampler(?callable $sampler): void
     {
-        $options = array_merge($this->options, ['traces_sampler' => $sampler]);
+        $this->set('traces_sampler', $sampler);
+    }
 
-        $this->options = $this->resolver->resolve($options);
+    private function set(string $option, mixed $value): void
+    {
+        $this->options = $this->resolver->resolve(array_merge($this->options, [$option => $value]));
     }
 
     private function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
+            'token' => $_SERVER['THOR_TOKEN'] ?? null,
+            'private_key' => $_SERVER['THOR_PRIVATE_KEY'] ?? null,
+            'url' => $_SERVER['THOR_URL'] ?? AuthData::DEFAULT_URL,
+            'auth_data' => null,
             'integrations' => [],
             'default_integrations' => true,
             'send_attempts' => 3,
@@ -377,27 +336,15 @@ final class Options
             'attach_stacktrace' => false,
             'context_lines' => 5,
             'enable_compression' => true,
+            'send_after_response' => \PHP_SAPI !== 'cli',
             'environment' => $_SERVER['THOR_ENVIRONMENT'] ?? null,
             'logger' => 'php',
             'release' => $_SERVER['THOR_RELEASE'] ?? null,
-            'token' => $_SERVER['THOR_TOKEN'] ?? null,
-            'email' => null,
-            'password' => null,
-            'private_key' => $_SERVER['THOR_PRIVATE_KEY'] ?? null,
-            'auth_data' => [
-                'token' => $_SERVER['THOR_TOKEN'] ?? 'enter',
-                'private_key' => $_SERVER['THOR_PRIVATE_KEY'] ?? 'enter',
-            ],
             'server_name' => gethostname(),
-            'before_send' => static function (Event $event): Event {
-                return $event;
-            },
-            'tags' => [],
+            'before_send' => static fn (Event $event): Event => $event,
             'error_types' => null,
             'max_breadcrumbs' => self::DEFAULT_MAX_BREADCRUMBS,
-            'before_breadcrumb' => static function (Breadcrumb $breadcrumb): Breadcrumb {
-                return $breadcrumb;
-            },
+            'before_breadcrumb' => static fn (Breadcrumb $breadcrumb): Breadcrumb => $breadcrumb,
             'in_app_exclude' => [],
             'in_app_include' => [],
             'send_default_pii' => false,
@@ -408,6 +355,10 @@ final class Options
             'class_serializers' => [],
         ]);
 
+        $resolver->setAllowedTypes('token', ['null', 'string']);
+        $resolver->setAllowedTypes('private_key', ['null', 'string']);
+        $resolver->setAllowedTypes('url', 'string');
+        $resolver->setAllowedTypes('auth_data', ['null', 'array', AuthData::class]);
         $resolver->setAllowedTypes('send_attempts', 'int');
         $resolver->setAllowedTypes('prefixes', 'string[]');
         $resolver->setAllowedTypes('sample_rate', ['int', 'float']);
@@ -416,21 +367,18 @@ final class Options
         $resolver->setAllowedTypes('attach_stacktrace', 'bool');
         $resolver->setAllowedTypes('context_lines', ['null', 'int']);
         $resolver->setAllowedTypes('enable_compression', 'bool');
+        $resolver->setAllowedTypes('send_after_response', 'bool');
         $resolver->setAllowedTypes('environment', ['null', 'string']);
         $resolver->setAllowedTypes('in_app_exclude', 'string[]');
         $resolver->setAllowedTypes('in_app_include', 'string[]');
-        $resolver->setAllowedTypes('logger', ['null', 'string']);
+        $resolver->setAllowedTypes('logger', 'string');
         $resolver->setAllowedTypes('release', ['null', 'string']);
-        $resolver->setAllowedTypes('token', ['null', 'string']);
-        $resolver->setAllowedTypes('private_key', ['null', 'string']);
-        $resolver->setAllowedTypes('auth_data', ['string[]', AuthData::class]);
         $resolver->setAllowedTypes('server_name', 'string');
-        $resolver->setAllowedTypes('before_send', ['callable']);
-        $resolver->setAllowedTypes('tags', 'string[]');
+        $resolver->setAllowedTypes('before_send', 'callable');
         $resolver->setAllowedTypes('error_types', ['null', 'int']);
         $resolver->setAllowedTypes('max_breadcrumbs', 'int');
-        $resolver->setAllowedTypes('before_breadcrumb', ['callable']);
-        $resolver->setAllowedTypes('integrations', ['Dock\Thor\\Integration\\IntegrationInterface[]', 'callable']);
+        $resolver->setAllowedTypes('before_breadcrumb', 'callable');
+        $resolver->setAllowedTypes('integrations', ['Dock\Thor\Integration\IntegrationInterface[]', 'callable']);
         $resolver->setAllowedTypes('send_default_pii', 'bool');
         $resolver->setAllowedTypes('default_integrations', 'bool');
         $resolver->setAllowedTypes('max_value_length', 'int');
@@ -440,117 +388,45 @@ final class Options
         $resolver->setAllowedTypes('class_serializers', 'array');
 
         $resolver->setAllowedValues('max_request_body_size', ['none', 'small', 'medium', 'always']);
-        $resolver->setAllowedValues('token', \Closure::fromCallable([$this, 'validateTokenOption']));
-        $resolver->setAllowedValues('private_key', \Closure::fromCallable([$this, 'validateTokenOption']));
-        $resolver->setAllowedValues('auth_data', \Closure::fromCallable([$this, 'validateAuthDataOption']));
-        $resolver->setAllowedValues('max_breadcrumbs', \Closure::fromCallable([$this, 'validateMaxBreadcrumbsOptions']));
-        $resolver->setAllowedValues('class_serializers', \Closure::fromCallable([$this, 'validateClassSerializersOption']));
-        $resolver->setAllowedValues('context_lines', \Closure::fromCallable([$this, 'validateContextLinesOption']));
+        $resolver->setAllowedValues('max_breadcrumbs', static fn (int $value): bool => $value >= 0 && $value <= self::DEFAULT_MAX_BREADCRUMBS);
+        $resolver->setAllowedValues('context_lines', static fn (?int $value): bool => null === $value || $value >= 0);
+        $resolver->setAllowedValues('class_serializers', \Closure::fromCallable([$this, 'validateClassSerializers']));
 
-        $resolver->setNormalizer('auth_data', \Closure::fromCallable([$this, 'normalizeAuthDataOption']));
-        $resolver->setNormalizer('tags', static function (SymfonyOptions $options, array $value): array {
-            if (!empty($value)) {
-                @trigger_error('The option "tags" is deprecated since version 3.2 and will be removed in 4.0. Either set the tags on the scope or on the event.', \E_USER_DEPRECATED);
-            }
-
-            return $value;
-        });
-
-        $resolver->setNormalizer('prefixes', function (SymfonyOptions $options, array $value) {
-            return array_map([$this, 'normalizeAbsolutePath'], $value);
-        });
-
-        $resolver->setNormalizer('in_app_exclude', function (SymfonyOptions $options, array $value) {
-            return array_map([$this, 'normalizeAbsolutePath'], $value);
-        });
-
-        $resolver->setNormalizer('in_app_include', function (SymfonyOptions $options, array $value) {
-            return array_map([$this, 'normalizeAbsolutePath'], $value);
-        });
-
-        $resolver->setNormalizer('logger', function (SymfonyOptions $options, ?string $value): ?string {
-            if ('php' !== $value) {
-                @trigger_error('The option "logger" is deprecated.', \E_USER_DEPRECATED);
-            }
-
-            return $value;
-        });
+        $resolver->setNormalizer('auth_data', \Closure::fromCallable([$this, 'normalizeAuthData']));
+        $resolver->setNormalizer('prefixes', fn (SymfonyOptions $options, array $value): array => array_map([$this, 'normalizeAbsolutePath'], $value));
+        $resolver->setNormalizer('in_app_exclude', fn (SymfonyOptions $options, array $value): array => array_map([$this, 'normalizeAbsolutePath'], $value));
+        $resolver->setNormalizer('in_app_include', fn (SymfonyOptions $options, array $value): array => array_map([$this, 'normalizeAbsolutePath'], $value));
     }
 
-    private function normalizeAbsolutePath(string $value): string
+    /**
+     * Poświadczenia można podać na trzy sposoby: gotowym obiektem `AuthData`,
+     * tablicą pod kluczem `auth_data` albo — najczęściej — parą `token`
+     * i `private_key`. Niekompletna konfiguracja daje `null`, czyli transport,
+     * który niczego nie wysyła; klucz-zaślepka wysyłałby zdarzenia w próżnię.
+     */
+    private function normalizeAuthData(SymfonyOptions $options, mixed $value): ?AuthData
     {
-        $path = @realpath($value);
-
-        if (false === $path) {
-            $path = $value;
-        }
-
-        return $path;
-    }
-
-    private function normalizeAuthDataOption(SymfonyOptions $options, $value): ?AuthData
-    {
-        if (null === $value || \is_bool($value) || is_string($value)) {
-            return null;
-        }
-
         if ($value instanceof AuthData) {
             return $value;
         }
 
-        if (!is_array($value) || !isset($value['token']) || !isset($value['private_key'])) {
+        $token = (string) ($value['token'] ?? $options['token'] ?? '');
+        $privateKey = (string) ($value['private_key'] ?? $options['private_key'] ?? '');
+        $url = (string) ($value['url'] ?? $options['url']);
+
+        if ($token === '' || $privateKey === '') {
             return null;
         }
 
-        return AuthData::create($value['token'], $value['private_key']);
+        return AuthData::create($token, $privateKey, $url);
     }
 
-    private function validateAuthDataOption($data): bool
+    private function normalizeAbsolutePath(string $value): string
     {
-        if (null === $data || $data instanceof AuthData) {
-            return true;
-        }
-        if (!is_array($data) || !isset($data['token']) || !isset($data['private_key'])) {
-            return false;
-        }
-
-        try {
-            AuthData::create($data['token'], $data['private_key']);
-
-            return true;
-        } catch (\InvalidArgumentException $exception) {
-            return false;
-        }
+        return @realpath($value) ?: $value;
     }
 
-    private function validateTokenOption($data): bool
-    {
-        if (null === $data) {
-            return true;
-        }
-        if (\is_bool($data)) {
-            return false === $data;
-        }
-
-        switch (strtolower($data)) {
-            case '':
-            case 'false':
-            case '(false)':
-            case 'empty':
-            case '(empty)':
-            case 'null':
-            case '(null)':
-                return true;
-        }
-        return true;
-    }
-
-    private function validateMaxBreadcrumbsOptions(int $value): bool
-    {
-        return $value >= 0 && $value <= self::DEFAULT_MAX_BREADCRUMBS;
-    }
-
-    private function validateClassSerializersOption(array $serializers): bool
+    private function validateClassSerializers(array $serializers): bool
     {
         foreach ($serializers as $class => $serializer) {
             if (!\is_string($class) || !\is_callable($serializer)) {
@@ -559,10 +435,5 @@ final class Options
         }
 
         return true;
-    }
-
-    private function validateContextLinesOption(?int $contextLines): bool
-    {
-        return null === $contextLines || $contextLines >= 0;
     }
 }

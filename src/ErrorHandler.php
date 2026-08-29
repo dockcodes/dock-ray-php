@@ -67,7 +67,6 @@ final class ErrorHandler
         \E_USER_DEPRECATED => 'User Deprecated',
         \E_NOTICE => 'Notice',
         \E_USER_NOTICE => 'User Notice',
-        \E_STRICT => 'Runtime Notice',
         \E_WARNING => 'Warning',
         \E_USER_WARNING => 'User Warning',
         \E_COMPILE_WARNING => 'Compile Warning',
@@ -163,6 +162,11 @@ final class ErrorHandler
         $this->exceptionListeners[] = $listener;
     }
 
+    private static function describeLevel(int $level): string
+    {
+        return self::ERROR_LEVELS_DESCRIPTION[$level] ?? 'Error';
+    }
+
     private function handleError(int $level, string $message, string $file, int $line, ?array $errcontext = []): bool
     {
         $isSilencedError = 0 === error_reporting();
@@ -176,9 +180,9 @@ final class ErrorHandler
         }
 
         if ($isSilencedError) {
-            $errorAsException = new SilencedErrorException(self::ERROR_LEVELS_DESCRIPTION[$level] . ': ' . $message, 0, $level, $file, $line);
+            $errorAsException = new SilencedErrorException(self::describeLevel($level) . ': ' . $message, 0, $level, $file, $line);
         } else {
-            $errorAsException = new \ErrorException(self::ERROR_LEVELS_DESCRIPTION[$level] . ': ' . $message, 0, $level, $file, $line);
+            $errorAsException = new \ErrorException(self::describeLevel($level) . ': ' . $message, 0, $level, $file, $line);
         }
 
         $backtrace = $this->cleanBacktraceFromErrorHandlerFrames($errorAsException->getTrace(), $errorAsException->getFile(), $errorAsException->getLine());
@@ -206,7 +210,7 @@ final class ErrorHandler
         $error = error_get_last();
 
         if (!empty($error) && $error['type'] & (\E_ERROR | \E_PARSE | \E_CORE_ERROR | \E_CORE_WARNING | \E_COMPILE_ERROR | \E_COMPILE_WARNING)) {
-            $errorAsException = new FatalErrorException(self::ERROR_LEVELS_DESCRIPTION[$error['type']] . ': ' . $error['message'], 0, $error['type'], $error['file'], $error['line']);
+            $errorAsException = new FatalErrorException(self::describeLevel($error['type']) . ': ' . $error['message'], 0, $error['type'], $error['file'], $error['line']);
 
             $this->exceptionReflection->setValue($errorAsException, []);
 

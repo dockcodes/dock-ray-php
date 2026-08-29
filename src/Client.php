@@ -22,6 +22,8 @@ final class Client implements ClientInterface
 
     public const SDK_IDENTIFIER = 'thor.php';
 
+    public const SDK_VERSION = '1.0.0';
+
     /**
      * @var Options
      */
@@ -164,7 +166,6 @@ final class Client implements ClientInterface
 
         $event->setSdkIdentifier($this->sdkIdentifier);
         $event->setSdkVersion($this->sdkVersion);
-        $event->setTags(array_merge($this->options->getTags(false), $event->getTags()));
 
         if (null === $event->getServerName()) {
             $event->setServerName($this->options->getServerName());
@@ -179,7 +180,7 @@ final class Client implements ClientInterface
         }
 
         if (null === $event->getLogger()) {
-            $event->setLogger($this->options->getLogger(false));
+            $event->setLogger($this->options->getLogger());
         }
 
         $isTransaction = EventType::transaction() === $event->getType();

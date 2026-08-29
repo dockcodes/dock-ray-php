@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Dock\Thor\Integration;
 
-use GuzzleHttp\Psr7\ServerRequest;
+use Http\Discovery\Psr17FactoryDiscovery;
+use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class RequestFetcher implements RequestFetcherInterface
@@ -15,6 +16,13 @@ final class RequestFetcher implements RequestFetcherInterface
             return null;
         }
 
-        return ServerRequest::fromGlobals();
+        $creator = new ServerRequestCreator(
+            Psr17FactoryDiscovery::findServerRequestFactory(),
+            Psr17FactoryDiscovery::findUriFactory(),
+            Psr17FactoryDiscovery::findUploadedFileFactory(),
+            Psr17FactoryDiscovery::findStreamFactory(),
+        );
+
+        return $creator->fromGlobals();
     }
 }

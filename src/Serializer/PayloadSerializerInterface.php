@@ -8,5 +8,5 @@ use Dock\Thor\Event;
 
 interface PayloadSerializerInterface
 {
-    public function serialize(Event $event, bool $json = true): string|array;
+    public function serialize(Event $event): string;
 }

@@ -14,21 +14,23 @@ use Dock\Thor\Util\JSON;
 
 final class PayloadSerializer implements PayloadSerializerInterface
 {
-    public function serialize(Event $event, bool $json = true): string|array
+    public function serialize(Event $event): string
     {
+        $payload = $this->toArray($event);
+
         if (EventType::transaction() === $event->getType()) {
-            return $this->serializeAsEnvelope($event);
+            $payload['sent_at'] = gmdate('Y-m-d\TH:i:s\Z');
         }
 
-        return $this->serializeAsEvent($event, $json);
+        return JSON::encode($payload);
     }
 
-    private function serializeAsEvent(Event $event, bool $json = true): string|array
+    private function toArray(Event $event): array
     {
         $result = [
             'event_id' => (string) $event->getId(),
             'timestamp' => $event->getTimestamp(),
-            'platform' => 'php',
+            'platform' => $event->getPlatform(),
             'sdk' => [
                 'name' => $event->getSdkIdentifier(),
                 'version' => $event->getSdkVersion(),
@@ -152,14 +154,7 @@ final class PayloadSerializer implements PayloadSerializerInterface
             ];
         }
 
-        return $json ? JSON::encode($result) : $result;
-    }
-
-    private function serializeAsEnvelope(Event $event): string
-    {
-        return JSON::encode(JSON::decode($this->serializeAsEvent($event)) + [
-            'sent_at' => gmdate('Y-m-d\TH:i:s\Z'),
-        ]);
+        return $result;
     }
 
     private function serializeBreadcrumb(Breadcrumb $breadcrumb): array

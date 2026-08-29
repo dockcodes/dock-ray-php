@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Dock\Thor\Integration;
 
-use GuzzleHttp\Psr7\Utils;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Dock\Thor\Event;
 use Dock\Thor\Exception\JsonException;
@@ -101,7 +101,7 @@ final class RequestIntegration implements IntegrationInterface
                 if (null === $user->getIpAddress()) {
                     $user->setIpAddress($serverParams['REMOTE_ADDR']);
                 }
-                if (null === $user->getAgent()) {
+                if (null === $user->getAgent() && isset($serverParams['HTTP_USER_AGENT'])) {
                     $user->setAgent($serverParams['HTTP_USER_AGENT']);
                 }
 
@@ -157,7 +157,7 @@ final class RequestIntegration implements IntegrationInterface
             return $requestData;
         }
 
-        $requestBody = Utils::copyToString($request->getBody(), self::MAX_REQUEST_BODY_SIZE_OPTION_TO_MAX_LENGTH_MAP[$maxRequestBodySize]);
+        $requestBody = $this->readStream($request->getBody(), self::MAX_REQUEST_BODY_SIZE_OPTION_TO_MAX_LENGTH_MAP[$maxRequestBodySize]);
 
         if ('application/json' === $request->getHeaderLine('Content-Type')) {
             try {
@@ -168,6 +168,18 @@ final class RequestIntegration implements IntegrationInterface
         }
 
         return $requestBody;
+    }
+
+    /**
+     * @param int $maxLength -1 czyta strumień do końca
+     */
+    private function readStream(StreamInterface $stream, int $maxLength): string
+    {
+        if ($stream->isSeekable()) {
+            $stream->rewind();
+        }
+
+        return $maxLength < 0 ? $stream->getContents() : $stream->read($maxLength);
     }
 
     private function parseUploadedFiles(array $uploadedFiles): array

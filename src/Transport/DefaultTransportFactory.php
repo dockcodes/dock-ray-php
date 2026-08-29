@@ -13,33 +13,12 @@ use Psr\Log\LoggerInterface;
 
 final class DefaultTransportFactory implements TransportFactoryInterface
 {
-    /**
-     * @var StreamFactoryInterface
-     */
-    private $streamFactory;
-
-    /**
-     * @var RequestFactoryInterface
-     */
-    private $requestFactory;
-
-    /**
-     * @var HttpClientFactoryInterface
-     */
-    private $httpClientFactory;
-
-    /**
-     * @var LoggerInterface|null
-     */
-    private $logger;
-
-    public function __construct(StreamFactoryInterface $streamFactory, RequestFactoryInterface $requestFactory, HttpClientFactoryInterface $httpClientFactory, ?LoggerInterface $logger = null)
-    {
-        $this->streamFactory = $streamFactory;
-        $this->requestFactory = $requestFactory;
-        $this->httpClientFactory = $httpClientFactory;
-        $this->logger = $logger;
-    }
+    public function __construct(
+        private readonly StreamFactoryInterface $streamFactory,
+        private readonly RequestFactoryInterface $requestFactory,
+        private readonly HttpClientFactoryInterface $httpClientFactory,
+        private readonly ?LoggerInterface $logger = null,
+    ) {}
 
     public function create(Options $options): TransportInterface
     {
@@ -47,7 +26,7 @@ final class DefaultTransportFactory implements TransportFactoryInterface
             return new NullTransport();
         }
 
-        return new HttpTransport(
+        $transport = new HttpTransport(
             $options,
             $this->httpClientFactory->create($options),
             $this->streamFactory,
@@ -55,5 +34,9 @@ final class DefaultTransportFactory implements TransportFactoryInterface
             new PayloadSerializer(),
             $this->logger
         );
+
+        return $options->shouldSendAfterResponse()
+            ? new DeferredTransport($transport)
+            : $transport;
     }
 }
