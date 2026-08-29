@@ -22,7 +22,7 @@ final class Client implements ClientInterface
 
     public const SDK_IDENTIFIER = 'thor.php';
 
-    public const SDK_VERSION = '1.0.0';
+    public const SDK_VERSION = '1.1.0';
 
     /**
      * @var Options
