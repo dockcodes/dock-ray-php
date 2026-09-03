@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Serializer;
+namespace Dock\Ray\Serializer;
 
 class Serializer extends AbstractSerializer implements SerializerInterface
 {

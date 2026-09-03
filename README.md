@@ -1,23 +1,23 @@
-# DockTHOR PHP SDK
+# DockRay PHP SDK
 
-Framework-agnostic PHP client for [DockTHOR](https://dock.codes). It reports
-uncaught exceptions, PHP errors and HTTP transactions to a DockTHOR project.
+Framework-agnostic PHP client for [DockRay](https://dockray.io). It reports
+uncaught exceptions, PHP errors and HTTP transactions to a DockRay project.
 
 Framework bridges build on this package and are shipped separately:
-`dock-thor-laravel`, `dock-thor-symfony`, `dock-thor-drupal`,
-`dock-thor-joomla` and the `dockthor` WordPress plugin.
+`dock-ray-laravel`, `dock-ray-symfony`, `dock-ray-drupal`,
+`dock-ray-joomla` and the `dockray` WordPress plugin.
 
 ## Installation
 
 ```shell
-composer require dockcodes/dock-thor
+composer require dockcodes/dock-ray
 ```
 
 Requires PHP 8.2 or newer.
 
 ## Configuration
 
-A project is identified by two values taken from the DockTHOR panel:
+A project is identified by two values taken from the DockRay panel:
 
 | Value | Where it goes | Secret |
 |---|---|---|
@@ -25,19 +25,18 @@ A project is identified by two values taken from the DockTHOR panel:
 | private key | `Authorization: Bearer` header | **yes** |
 
 ```php
-use function Dock\Thor\init;
+use function Dock\Ray\init;
 
 init([
     'token' => 'PROJECT_TOKEN',
     'private_key' => 'PROJECT_PRIVATE_KEY',
-    'url' => 'https://thor.dock.codes',
     'environment' => 'production',
     'release' => '1.4.0',
 ]);
 ```
 
-`token`, `private_key` and `url` also default to the `THOR_TOKEN`,
-`THOR_PRIVATE_KEY` and `THOR_URL` server variables, so a deployment can
+`token`, `private_key` and `url` also default to the `RAY_TOKEN`,
+`RAY_PRIVATE_KEY` and `RAY_URL` server variables, so a deployment can
 configure the SDK without touching code. When either credential is missing the
 SDK stays loaded but sends nothing — it never throws for being unconfigured.
 
@@ -45,7 +44,6 @@ SDK stays loaded but sends nothing — it never throws for being unconfigured.
 
 | Option | Default | Meaning |
 |---|---|---|
-| `url` | `https://thor.dock.codes` | DockTHOR instance to report to |
 | `environment` | `null` | shown as the environment column in the panel |
 | `release` | `null` | version of the deployed application |
 | `error_types` | `error_reporting()` | which PHP errors become events |
@@ -61,9 +59,9 @@ SDK stays loaded but sends nothing — it never throws for being unconfigured.
 ## Reporting
 
 ```php
-use Dock\Thor\Breadcrumb;
-use Dock\Thor\Severity;
-use function Dock\Thor\{addBreadcrumb, captureException, captureMessage, configureScope};
+use Dock\Ray\Breadcrumb;
+use Dock\Ray\Severity;
+use function Dock\Ray\{addBreadcrumb, captureException, captureMessage, configureScope};
 
 captureMessage('Cache cleared', Severity::info());
 
@@ -75,7 +73,7 @@ try {
 
 addBreadcrumb(new Breadcrumb(Breadcrumb::LEVEL_INFO, Breadcrumb::TYPE_DEFAULT, 'auth', 'User logged in'));
 
-configureScope(function (\Dock\Thor\State\Scope $scope) {
+configureScope(function (\Dock\Ray\State\Scope $scope) {
     $scope->setTag('feature', 'payments');
     $scope->setUser(['id' => 42, 'email' => 'user@example.com']);
 });
@@ -107,7 +105,7 @@ A transaction measures one HTTP request. The panel needs the request URL, the
 method and the response status, so the SDK ships a helper that fills all three:
 
 ```php
-use Dock\Thor\Framework\HttpTransaction;
+use Dock\Ray\Framework\HttpTransaction;
 
 $transaction = HttpTransaction::start('GET /checkout', $url, 'GET');
 $transaction->measureHandling('app.handle');
@@ -126,13 +124,13 @@ sit in page source. The SDK therefore ships the collector script and the
 server-side normaliser, and the application in the middle does the reporting:
 
 ```
-browser  →  your application  →  DockTHOR
+browser  →  your application  →  DockRay
          (no key)          (project key)
 ```
 
 ```php
-use Dock\Thor\Browser\BrowserEvent;
-use Dock\Thor\Browser\Collector;
+use Dock\Ray\Browser\BrowserEvent;
+use Dock\Ray\Browser\Collector;
 
 // Rendering the page: point the collector at your own endpoint.
 $config = Collector::config(endpoint: '/errors/browser', token: $csrfToken);
@@ -170,7 +168,7 @@ Every bridge does the same four things, and the SDK has a seam for each:
 
 Anything the framework knows better than the SDK — how to read the current
 request, who the current user is, where the application root lives — is passed
-in through options and the scope. Nothing in `Dock\Thor` reaches back into a
+in through options and the scope. Nothing in `Dock\Ray` reaches back into a
 framework.
 
 ## License

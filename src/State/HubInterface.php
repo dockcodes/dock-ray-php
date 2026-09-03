@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\State;
+namespace Dock\Ray\State;
 
-use Dock\Thor\Breadcrumb;
-use Dock\Thor\ClientInterface;
-use Dock\Thor\Event;
-use Dock\Thor\EventHint;
-use Dock\Thor\EventId;
-use Dock\Thor\Integration\IntegrationInterface;
-use Dock\Thor\Severity;
-use Dock\Thor\Tracing\SamplingContext;
-use Dock\Thor\Tracing\Span;
-use Dock\Thor\Tracing\Transaction;
-use Dock\Thor\Tracing\TransactionContext;
+use Dock\Ray\Breadcrumb;
+use Dock\Ray\ClientInterface;
+use Dock\Ray\Event;
+use Dock\Ray\EventHint;
+use Dock\Ray\EventId;
+use Dock\Ray\Integration\IntegrationInterface;
+use Dock\Ray\Severity;
+use Dock\Ray\Tracing\SamplingContext;
+use Dock\Ray\Tracing\Span;
+use Dock\Ray\Tracing\Transaction;
+use Dock\Ray\Tracing\TransactionContext;
 
 interface HubInterface
 {

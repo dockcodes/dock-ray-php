@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 use Symfony\Component\OptionsResolver\Options as SymfonyOptions;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -322,9 +322,9 @@ final class Options
     private function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'token' => $_SERVER['THOR_TOKEN'] ?? null,
-            'private_key' => $_SERVER['THOR_PRIVATE_KEY'] ?? null,
-            'url' => $_SERVER['THOR_URL'] ?? AuthData::DEFAULT_URL,
+            'token' => $_SERVER['RAY_TOKEN'] ?? null,
+            'private_key' => $_SERVER['RAY_PRIVATE_KEY'] ?? null,
+            'url' => $_SERVER['RAY_URL'] ?? AuthData::DEFAULT_URL,
             'auth_data' => null,
             'integrations' => [],
             'default_integrations' => true,
@@ -337,9 +337,9 @@ final class Options
             'context_lines' => 5,
             'enable_compression' => true,
             'send_after_response' => \PHP_SAPI !== 'cli',
-            'environment' => $_SERVER['THOR_ENVIRONMENT'] ?? null,
+            'environment' => $_SERVER['RAY_ENVIRONMENT'] ?? null,
             'logger' => 'php',
-            'release' => $_SERVER['THOR_RELEASE'] ?? null,
+            'release' => $_SERVER['RAY_RELEASE'] ?? null,
             'server_name' => gethostname(),
             'before_send' => static fn (Event $event): Event => $event,
             'error_types' => null,
@@ -378,7 +378,7 @@ final class Options
         $resolver->setAllowedTypes('error_types', ['null', 'int']);
         $resolver->setAllowedTypes('max_breadcrumbs', 'int');
         $resolver->setAllowedTypes('before_breadcrumb', 'callable');
-        $resolver->setAllowedTypes('integrations', ['Dock\Thor\Integration\IntegrationInterface[]', 'callable']);
+        $resolver->setAllowedTypes('integrations', ['Dock\Ray\Integration\IntegrationInterface[]', 'callable']);
         $resolver->setAllowedTypes('send_default_pii', 'bool');
         $resolver->setAllowedTypes('default_integrations', 'bool');
         $resolver->setAllowedTypes('max_value_length', 'int');

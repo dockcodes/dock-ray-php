@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
-use Dock\Thor\Serializer\RepresentationSerializerInterface;
+use Dock\Ray\Serializer\RepresentationSerializerInterface;
 
 final class StacktraceBuilder
 {

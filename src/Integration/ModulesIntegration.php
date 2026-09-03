@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
 use Composer\InstalledVersions;
 use Jean85\PrettyVersions;
 use PackageVersions\Versions;
-use Dock\Thor\Event;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\Scope;
+use Dock\Ray\Event;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\Scope;
 
 final class ModulesIntegration implements IntegrationInterface
 {
@@ -18,7 +18,7 @@ final class ModulesIntegration implements IntegrationInterface
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(static function (Event $event): Event {
-            $integration = ThorSdk::getCurrentHub()->getIntegration(self::class);
+            $integration = RaySdk::getCurrentHub()->getIntegration(self::class);
 
             // The integration could be bound to a client that is not the one
             // attached to the current hub. If this is the case, bail out
@@ -55,6 +55,6 @@ final class ModulesIntegration implements IntegrationInterface
             return array_keys(Versions::VERSIONS);
         }
 
-        return ['dockcodes/dock-thor'];
+        return ['dockcodes/dock-ray'];
     }
 }

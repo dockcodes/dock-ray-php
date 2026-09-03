@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
-use Dock\Thor\Context\OsContext;
-use Dock\Thor\Context\RuntimeContext;
-use Dock\Thor\Event;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\Scope;
-use Dock\Thor\Util\PHPVersion;
+use Dock\Ray\Context\OsContext;
+use Dock\Ray\Context\RuntimeContext;
+use Dock\Ray\Event;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\Scope;
+use Dock\Ray\Util\PHPVersion;
 
 final class EnvironmentIntegration implements IntegrationInterface
 {
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(static function (Event $event): Event {
-            $integration = ThorSdk::getCurrentHub()->getIntegration(self::class);
+            $integration = RaySdk::getCurrentHub()->getIntegration(self::class);
 
             if (null !== $integration) {
                 $event->setRuntimeContext($integration->updateRuntimeContext($event->getRuntimeContext()));

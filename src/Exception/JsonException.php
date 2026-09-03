@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Exception;
+namespace Dock\Ray\Exception;
 
 final class JsonException extends \Exception
 {

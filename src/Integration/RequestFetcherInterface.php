@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
 use Psr\Http\Message\ServerRequestInterface;
 

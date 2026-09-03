@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Util;
+namespace Dock\Ray\Util;
 
 final class PHPVersion
 {

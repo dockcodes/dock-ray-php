@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Serializer;
+namespace Dock\Ray\Serializer;
 
-use Dock\Thor\Event;
+use Dock\Ray\Event;
 
 interface PayloadSerializerInterface
 {

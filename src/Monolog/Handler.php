@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Monolog;
+namespace Dock\Ray\Monolog;
 
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
 use Monolog\LogRecord;
-use Dock\Thor\Event;
-use Dock\Thor\EventHint;
-use Dock\Thor\Severity;
-use Dock\Thor\State\HubInterface;
-use Dock\Thor\State\Scope;
+use Dock\Ray\Event;
+use Dock\Ray\EventHint;
+use Dock\Ray\Severity;
+use Dock\Ray\State\HubInterface;
+use Dock\Ray\State\Scope;
 
 final class Handler extends AbstractProcessingHandler
 {

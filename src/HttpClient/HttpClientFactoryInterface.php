@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\HttpClient;
+namespace Dock\Ray\HttpClient;
 
 use Http\Client\HttpAsyncClient as HttpAsyncClientInterface;
-use Dock\Thor\Options;
+use Dock\Ray\Options;
 
 interface HttpClientFactoryInterface
 {

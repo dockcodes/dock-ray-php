@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
-use Dock\Thor\Event;
-use Dock\Thor\ExceptionMechanism;
-use Dock\Thor\State\HubInterface;
-use Dock\Thor\State\Scope;
+use Dock\Ray\Event;
+use Dock\Ray\ExceptionMechanism;
+use Dock\Ray\State\HubInterface;
+use Dock\Ray\State\Scope;
 
 abstract class AbstractErrorListenerIntegration implements IntegrationInterface
 {

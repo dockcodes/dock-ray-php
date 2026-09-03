@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
-use Dock\Thor\Event;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\Scope;
+use Dock\Ray\Event;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\Scope;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 final class IgnoreErrorsIntegration implements IntegrationInterface
@@ -31,7 +31,7 @@ final class IgnoreErrorsIntegration implements IntegrationInterface
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(static function (Event $event): ?Event {
-            $integration = ThorSdk::getCurrentHub()->getIntegration(self::class);
+            $integration = RaySdk::getCurrentHub()->getIntegration(self::class);
 
             if (null !== $integration && $integration->shouldDropEvent($event, $integration->options)) {
                 return null;

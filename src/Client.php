@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use Jean85\PrettyVersions;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Dock\Thor\Integration\IntegrationInterface;
-use Dock\Thor\Integration\IntegrationRegistry;
-use Dock\Thor\Serializer\RepresentationSerializer;
-use Dock\Thor\Serializer\RepresentationSerializerInterface;
-use Dock\Thor\Serializer\SerializerInterface;
-use Dock\Thor\State\Scope;
-use Dock\Thor\Transport\TransportInterface;
+use Dock\Ray\Integration\IntegrationInterface;
+use Dock\Ray\Integration\IntegrationRegistry;
+use Dock\Ray\Serializer\RepresentationSerializer;
+use Dock\Ray\Serializer\RepresentationSerializerInterface;
+use Dock\Ray\Serializer\SerializerInterface;
+use Dock\Ray\State\Scope;
+use Dock\Ray\Transport\TransportInterface;
 
 final class Client implements ClientInterface
 {
     public const PROTOCOL_VERSION = '1';
 
-    public const SDK_IDENTIFIER = 'thor.php';
+    public const SDK_IDENTIFIER = 'ray.php';
 
     public const SDK_VERSION = '1.1.0';
 
@@ -77,7 +77,7 @@ final class Client implements ClientInterface
         $this->representationSerializer = $representationSerializer ?? new RepresentationSerializer($this->options);
         $this->stacktraceBuilder = new StacktraceBuilder($options, $this->representationSerializer);
         $this->sdkIdentifier = $sdkIdentifier ?? self::SDK_IDENTIFIER;
-        $this->sdkVersion = $sdkVersion ?? PrettyVersions::getVersion('dockcodes/dock-thor')->getPrettyVersion();
+        $this->sdkVersion = $sdkVersion ?? PrettyVersions::getVersion('dockcodes/dock-ray')->getPrettyVersion();
     }
 
     public function getOptions(): Options

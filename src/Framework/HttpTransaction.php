@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Framework;
+namespace Dock\Ray\Framework;
 
-use Dock\Thor\State\HubInterface;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\Tracing\Span;
-use Dock\Thor\Tracing\SpanContext;
-use Dock\Thor\Tracing\Transaction;
-use Dock\Thor\Tracing\TransactionContext;
+use Dock\Ray\State\HubInterface;
+use Dock\Ray\RaySdk;
+use Dock\Ray\Tracing\Span;
+use Dock\Ray\Tracing\SpanContext;
+use Dock\Ray\Tracing\Transaction;
+use Dock\Ray\Tracing\TransactionContext;
 
 /**
  * Transakcja jednego żądania HTTP.
@@ -34,7 +34,7 @@ final class HttpTransaction
         ?float $startTimestamp = null,
         ?HubInterface $hub = null,
     ): self {
-        $instance = new self($hub ?? ThorSdk::getCurrentHub());
+        $instance = new self($hub ?? RaySdk::getCurrentHub());
 
         if (! $instance->isTracing()) {
             return $instance;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Browser;
+namespace Dock\Ray\Browser;
 
 /**
  * Wskazuje plik kolektora i buduje jego konfigurację.
@@ -16,7 +16,7 @@ final class Collector
 {
     public static function scriptPath(): string
     {
-        return \dirname(__DIR__, 2) . '/browser/thor-browser.js';
+        return \dirname(__DIR__, 2) . '/browser/ray-browser.js';
     }
 
     public static function scriptVersion(): string

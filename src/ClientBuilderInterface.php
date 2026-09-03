@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 use Psr\Log\LoggerInterface;
-use Dock\Thor\Serializer\RepresentationSerializerInterface;
-use Dock\Thor\Serializer\SerializerInterface;
-use Dock\Thor\Transport\TransportFactoryInterface;
+use Dock\Ray\Serializer\RepresentationSerializerInterface;
+use Dock\Ray\Serializer\SerializerInterface;
+use Dock\Ray\Transport\TransportFactoryInterface;
 
 interface ClientBuilderInterface
 {

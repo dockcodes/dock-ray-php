@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Transport;
+namespace Dock\Ray\Transport;
 
 use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Promise\PromiseInterface;
-use Dock\Thor\Event;
-use Dock\Thor\Response;
-use Dock\Thor\ResponseStatus;
+use Dock\Ray\Event;
+use Dock\Ray\Response;
+use Dock\Ray\ResponseStatus;
 
 final class NullTransport implements TransportInterface
 {

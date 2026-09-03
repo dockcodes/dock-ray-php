@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
-use Dock\Thor\Serializer\RepresentationSerializerInterface;
+use Dock\Ray\Serializer\RepresentationSerializerInterface;
 
 final class FrameBuilder
 {
@@ -80,7 +80,7 @@ final class FrameBuilder
             return false;
         }
 
-        if (null !== $functionName && str_starts_with($functionName, 'Dock\Thor\\')) {
+        if (null !== $functionName && str_starts_with($functionName, 'Dock\Ray\\')) {
             return false;
         }
 

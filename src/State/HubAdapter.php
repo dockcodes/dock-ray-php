@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\State;
+namespace Dock\Ray\State;
 
-use Dock\Thor\Breadcrumb;
-use Dock\Thor\ClientInterface;
-use Dock\Thor\Event;
-use Dock\Thor\EventHint;
-use Dock\Thor\EventId;
-use Dock\Thor\Integration\IntegrationInterface;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\Severity;
-use Dock\Thor\Tracing\Span;
-use Dock\Thor\Tracing\Transaction;
-use Dock\Thor\Tracing\TransactionContext;
+use Dock\Ray\Breadcrumb;
+use Dock\Ray\ClientInterface;
+use Dock\Ray\Event;
+use Dock\Ray\EventHint;
+use Dock\Ray\EventId;
+use Dock\Ray\Integration\IntegrationInterface;
+use Dock\Ray\RaySdk;
+use Dock\Ray\Severity;
+use Dock\Ray\Tracing\Span;
+use Dock\Ray\Tracing\Transaction;
+use Dock\Ray\Tracing\TransactionContext;
 
 final class HubAdapter implements HubInterface
 {
@@ -38,87 +38,87 @@ final class HubAdapter implements HubInterface
 
     public function getClient(): ?ClientInterface
     {
-        return ThorSdk::getCurrentHub()->getClient();
+        return RaySdk::getCurrentHub()->getClient();
     }
 
     public function getLastEventId(): ?EventId
     {
-        return ThorSdk::getCurrentHub()->getLastEventId();
+        return RaySdk::getCurrentHub()->getLastEventId();
     }
 
     public function pushScope(): Scope
     {
-        return ThorSdk::getCurrentHub()->pushScope();
+        return RaySdk::getCurrentHub()->pushScope();
     }
 
     public function popScope(): bool
     {
-        return ThorSdk::getCurrentHub()->popScope();
+        return RaySdk::getCurrentHub()->popScope();
     }
 
     public function withScope(callable $callback): void
     {
-        ThorSdk::getCurrentHub()->withScope($callback);
+        RaySdk::getCurrentHub()->withScope($callback);
     }
 
     public function configureScope(callable $callback): void
     {
-        ThorSdk::getCurrentHub()->configureScope($callback);
+        RaySdk::getCurrentHub()->configureScope($callback);
     }
 
     public function bindClient(ClientInterface $client): void
     {
-        ThorSdk::getCurrentHub()->bindClient($client);
+        RaySdk::getCurrentHub()->bindClient($client);
     }
 
     public function captureMessage(string $message, ?Severity $level = null, ?EventHint $hint = null): ?EventId
     {
-        return ThorSdk::getCurrentHub()->captureMessage($message, $level, $hint);
+        return RaySdk::getCurrentHub()->captureMessage($message, $level, $hint);
     }
 
     public function captureException(\Throwable $exception, ?EventHint $hint = null): ?EventId
     {
-        return ThorSdk::getCurrentHub()->captureException($exception, $hint);
+        return RaySdk::getCurrentHub()->captureException($exception, $hint);
     }
 
     public function captureEvent(Event $event, ?EventHint $hint = null): ?EventId
     {
-        return ThorSdk::getCurrentHub()->captureEvent($event, $hint);
+        return RaySdk::getCurrentHub()->captureEvent($event, $hint);
     }
 
     public function captureLastError(?EventHint $hint = null): ?EventId
     {
-        return ThorSdk::getCurrentHub()->captureLastError($hint);
+        return RaySdk::getCurrentHub()->captureLastError($hint);
     }
 
     public function addBreadcrumb(Breadcrumb $breadcrumb): bool
     {
-        return ThorSdk::getCurrentHub()->addBreadcrumb($breadcrumb);
+        return RaySdk::getCurrentHub()->addBreadcrumb($breadcrumb);
     }
 
     public function getIntegration(string $className): ?IntegrationInterface
     {
-        return ThorSdk::getCurrentHub()->getIntegration($className);
+        return RaySdk::getCurrentHub()->getIntegration($className);
     }
 
     public function startTransaction(TransactionContext $context, array $customSamplingContext = []): Transaction
     {
-        return ThorSdk::getCurrentHub()->startTransaction($context, $customSamplingContext);
+        return RaySdk::getCurrentHub()->startTransaction($context, $customSamplingContext);
     }
 
     public function getTransaction(): ?Transaction
     {
-        return ThorSdk::getCurrentHub()->getTransaction();
+        return RaySdk::getCurrentHub()->getTransaction();
     }
 
     public function getSpan(): ?Span
     {
-        return ThorSdk::getCurrentHub()->getSpan();
+        return RaySdk::getCurrentHub()->getSpan();
     }
 
     public function setSpan(?Span $span): HubInterface
     {
-        return ThorSdk::getCurrentHub()->setSpan($span);
+        return RaySdk::getCurrentHub()->setSpan($span);
     }
 
     public function __clone()

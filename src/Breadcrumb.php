@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
-use Dock\Thor\Exception\InvalidArgumentException;
+use Dock\Ray\Exception\InvalidArgumentException;
 
 final class Breadcrumb
 {

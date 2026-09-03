@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Serializer;
+namespace Dock\Ray\Serializer;
 
-use Dock\Thor\Breadcrumb;
-use Dock\Thor\Event;
-use Dock\Thor\EventType;
-use Dock\Thor\ExceptionDataBag;
-use Dock\Thor\Frame;
-use Dock\Thor\Tracing\Span;
-use Dock\Thor\Util\JSON;
+use Dock\Ray\Breadcrumb;
+use Dock\Ray\Event;
+use Dock\Ray\EventType;
+use Dock\Ray\ExceptionDataBag;
+use Dock\Ray\Frame;
+use Dock\Ray\Tracing\Span;
+use Dock\Ray\Util\JSON;
 
 final class PayloadSerializer implements PayloadSerializerInterface
 {

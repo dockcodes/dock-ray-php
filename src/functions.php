@@ -2,53 +2,53 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
-use Dock\Thor\Tracing\Transaction;
-use Dock\Thor\Tracing\TransactionContext;
+use Dock\Ray\Tracing\Transaction;
+use Dock\Ray\Tracing\TransactionContext;
 
 function init(array $options = []): void
 {
     $client = ClientBuilder::create($options)->getClient();
-    ThorSdk::init()->bindClient($client);
+    RaySdk::init()->bindClient($client);
 }
 
 function captureMessage(string $message, ?Severity $level = null, ?EventHint $hint = null): ?EventId
 {
-    return ThorSdk::getCurrentHub()->captureMessage($message, $level, $hint);
+    return RaySdk::getCurrentHub()->captureMessage($message, $level, $hint);
 }
 
 function captureException(\Throwable $exception, ?EventHint $hint = null): ?EventId
 {
-    return ThorSdk::getCurrentHub()->captureException($exception, $hint);
+    return RaySdk::getCurrentHub()->captureException($exception, $hint);
 }
 
 function captureEvent(Event $event, ?EventHint $hint = null): ?EventId
 {
-    return ThorSdk::getCurrentHub()->captureEvent($event, $hint);
+    return RaySdk::getCurrentHub()->captureEvent($event, $hint);
 }
 
 function captureLastError(?EventHint $hint = null): ?EventId
 {
-    return ThorSdk::getCurrentHub()->captureLastError($hint);
+    return RaySdk::getCurrentHub()->captureLastError($hint);
 }
 
 function addBreadcrumb(Breadcrumb $breadcrumb): void
 {
-    ThorSdk::getCurrentHub()->addBreadcrumb($breadcrumb);
+    RaySdk::getCurrentHub()->addBreadcrumb($breadcrumb);
 }
 
 function configureScope(callable $callback): void
 {
-    ThorSdk::getCurrentHub()->configureScope($callback);
+    RaySdk::getCurrentHub()->configureScope($callback);
 }
 
 function withScope(callable $callback): void
 {
-    ThorSdk::getCurrentHub()->withScope($callback);
+    RaySdk::getCurrentHub()->withScope($callback);
 }
 
 function startTransaction(TransactionContext $context, array $customSamplingContext = []): Transaction
 {
-    return ThorSdk::getCurrentHub()->startTransaction($context, $customSamplingContext);
+    return RaySdk::getCurrentHub()->startTransaction($context, $customSamplingContext);
 }

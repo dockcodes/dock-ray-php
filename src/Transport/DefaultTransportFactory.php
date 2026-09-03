@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Transport;
+namespace Dock\Ray\Transport;
 
-use Dock\Thor\HttpClient\HttpClientFactoryInterface;
-use Dock\Thor\Options;
-use Dock\Thor\Serializer\PayloadSerializer;
+use Dock\Ray\HttpClient\HttpClientFactoryInterface;
+use Dock\Ray\Options;
+use Dock\Ray\Serializer\PayloadSerializer;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Log\LoggerInterface;

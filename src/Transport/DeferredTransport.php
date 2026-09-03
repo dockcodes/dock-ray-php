@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Transport;
+namespace Dock\Ray\Transport;
 
-use Dock\Thor\Event;
-use Dock\Thor\Framework\ResponseFlusher;
-use Dock\Thor\Response;
-use Dock\Thor\ResponseStatus;
+use Dock\Ray\Event;
+use Dock\Ray\Framework\ResponseFlusher;
+use Dock\Ray\Response;
+use Dock\Ray\ResponseStatus;
 use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 

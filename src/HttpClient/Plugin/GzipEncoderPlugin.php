@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\HttpClient\Plugin;
+namespace Dock\Ray\HttpClient\Plugin;
 
 use Http\Client\Common\Plugin as PluginInterface;
 use Http\Promise\Promise as PromiseInterface;

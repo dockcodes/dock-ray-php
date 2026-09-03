@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Tracing;
+namespace Dock\Ray\Tracing;
 
-use Dock\Thor\EventId;
+use Dock\Ray\EventId;
 
 class Span
 {

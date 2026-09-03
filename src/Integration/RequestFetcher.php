@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
 use Http\Discovery\Psr17FactoryDiscovery;
 use Nyholm\Psr7Server\ServerRequestCreator;

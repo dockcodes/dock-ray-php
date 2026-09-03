@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Dock\Thor\Event;
-use Dock\Thor\Exception\JsonException;
-use Dock\Thor\Options;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\Scope;
-use Dock\Thor\UserDataBag;
-use Dock\Thor\Util\JSON;
+use Dock\Ray\Event;
+use Dock\Ray\Exception\JsonException;
+use Dock\Ray\Options;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\Scope;
+use Dock\Ray\UserDataBag;
+use Dock\Ray\Util\JSON;
 use Symfony\Component\OptionsResolver\Options as SymfonyOptions;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -55,7 +55,7 @@ final class RequestIntegration implements IntegrationInterface
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(function (Event $event): Event {
-            $currentHub = ThorSdk::getCurrentHub();
+            $currentHub = RaySdk::getCurrentHub();
             $integration = $currentHub->getIntegration(self::class);
             $client = $currentHub->getClient();
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Transport;
+namespace Dock\Ray\Transport;
 
-use Dock\Thor\Event;
-use Dock\Thor\EventType;
-use Dock\Thor\Options;
-use Dock\Thor\Response;
-use Dock\Thor\ResponseStatus;
-use Dock\Thor\Serializer\PayloadSerializerInterface;
+use Dock\Ray\Event;
+use Dock\Ray\EventType;
+use Dock\Ray\Options;
+use Dock\Ray\Response;
+use Dock\Ray\ResponseStatus;
+use Dock\Ray\Serializer\PayloadSerializerInterface;
 use GuzzleHttp\Promise\FulfilledPromise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\RejectedPromise;
@@ -56,7 +56,7 @@ final class HttpTransport implements TransportInterface
             $response = $this->httpClient->sendAsyncRequest($request)->wait();
         } catch (\Throwable $exception) {
             $this->logger->error(
-                sprintf('Failed to send the event to DockTHOR. Reason: "%s".', $exception->getMessage()),
+                sprintf('Failed to send the event to DockRay. Reason: "%s".', $exception->getMessage()),
                 ['exception' => $exception, 'event' => $event]
             );
 

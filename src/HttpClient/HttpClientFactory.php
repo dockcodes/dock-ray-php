@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\HttpClient;
+namespace Dock\Ray\HttpClient;
 
-use Dock\Thor\HttpClient\Authentication\ThorAuthentication;
-use Dock\Thor\HttpClient\Plugin\GzipEncoderPlugin;
-use Dock\Thor\Options;
+use Dock\Ray\HttpClient\Authentication\RayAuthentication;
+use Dock\Ray\HttpClient\Plugin\GzipEncoderPlugin;
+use Dock\Ray\Options;
 use GuzzleHttp\RequestOptions as GuzzleHttpClientOptions;
 use Http\Adapter\Guzzle7\Client as GuzzleHttpClient;
 use Http\Client\Common\Plugin\AuthenticationPlugin;
@@ -38,7 +38,7 @@ final class HttpClientFactory implements HttpClientFactoryInterface
     public function create(Options $options): HttpAsyncClientInterface
     {
         if (null === $options->getAuthData()) {
-            throw new \RuntimeException('Cannot create an HTTP client without the DockTHOR credentials set in the options.');
+            throw new \RuntimeException('Cannot create an HTTP client without the DockRay credentials set in the options.');
         }
 
         if (null !== $this->httpClient && null !== $options->getHttpProxy()) {
@@ -47,7 +47,7 @@ final class HttpClientFactory implements HttpClientFactoryInterface
 
         $plugins = [
             new HeaderSetPlugin(['User-Agent' => $this->sdkIdentifier . '/' . $this->sdkVersion]),
-            new AuthenticationPlugin(new ThorAuthentication($options)),
+            new AuthenticationPlugin(new RayAuthentication($options)),
             new RetryPlugin(['retries' => $options->getSendAttempts()]),
             new ErrorPlugin(),
         ];

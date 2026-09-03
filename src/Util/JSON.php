@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Util;
+namespace Dock\Ray\Util;
 
-use Dock\Thor\Exception\JsonException;
+use Dock\Ray\Exception\JsonException;
 
 final class JSON
 {

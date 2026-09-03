@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
-use Dock\Thor\Exception\FatalErrorException;
-use Dock\Thor\Exception\SilencedErrorException;
+use Dock\Ray\Exception\FatalErrorException;
+use Dock\Ray\Exception\SilencedErrorException;
 
 final class ErrorHandler
 {

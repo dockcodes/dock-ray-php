@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 use Jean85\PrettyVersions;
-use Dock\Thor\Context\OsContext;
-use Dock\Thor\Context\RuntimeContext;
+use Dock\Ray\Context\OsContext;
+use Dock\Ray\Context\RuntimeContext;
 
 final class Event
 {
@@ -156,7 +156,7 @@ final class Event
     {
         $this->id = $eventId ?? EventId::generate();
         $this->timestamp = microtime(true);
-        $this->sdkVersion = PrettyVersions::getVersion('dockcodes/dock-thor')->getPrettyVersion();
+        $this->sdkVersion = PrettyVersions::getVersion('dockcodes/dock-ray')->getPrettyVersion();
         $this->type = $eventType;
     }
 

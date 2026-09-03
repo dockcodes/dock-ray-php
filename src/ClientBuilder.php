@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 use Http\Discovery\Psr17FactoryDiscovery;
 use Jean85\PrettyVersions;
-use Dock\Thor\HttpClient\HttpClientFactory;
-use Dock\Thor\Serializer\RepresentationSerializerInterface;
-use Dock\Thor\Serializer\SerializerInterface;
-use Dock\Thor\Transport\DefaultTransportFactory;
-use Dock\Thor\Transport\TransportFactoryInterface;
-use Dock\Thor\Transport\TransportInterface;
+use Dock\Ray\HttpClient\HttpClientFactory;
+use Dock\Ray\Serializer\RepresentationSerializerInterface;
+use Dock\Ray\Serializer\SerializerInterface;
+use Dock\Ray\Transport\DefaultTransportFactory;
+use Dock\Ray\Transport\TransportFactoryInterface;
+use Dock\Ray\Transport\TransportInterface;
 use Psr\Log\LoggerInterface;
 
 final class ClientBuilder implements ClientBuilderInterface
@@ -70,7 +70,7 @@ final class ClientBuilder implements ClientBuilderInterface
     private static function detectSdkVersion(): string
     {
         try {
-            return PrettyVersions::getVersion('dockcodes/dock-thor')->getPrettyVersion();
+            return PrettyVersions::getVersion('dockcodes/dock-ray')->getPrettyVersion();
         } catch (\Throwable) {
             return Client::SDK_VERSION;
         }

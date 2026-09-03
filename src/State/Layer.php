@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\State;
+namespace Dock\Ray\State;
 
-use Dock\Thor\ClientInterface;
+use Dock\Ray\ClientInterface;
 
 final class Layer
 {

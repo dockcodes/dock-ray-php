@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 /**
  * Adres ingestu i para poświadczeń projektu.
@@ -11,12 +11,12 @@ namespace Dock\Thor;
  * `privateKey` to sekret projektu wysyłany nagłówkiem `Authorization: Bearer`.
  *
  * Domyślny adres jest tu jednym miejscem dla całego SDK — przy przejściu na
- * dockthor.io zmienia się `DEFAULT_URL`, a instalacje, które podały własny
+ * dockray.io zmienia się `DEFAULT_URL`, a instalacje, które podały własny
  * adres, zostają nietknięte.
  */
 final class AuthData implements \Stringable
 {
-    public const DEFAULT_URL = 'https://thor.dock.codes';
+    public const DEFAULT_URL = 'https://dockray.io';
 
     private const API_PATH = '/api/v1';
 
@@ -45,7 +45,7 @@ final class AuthData implements \Stringable
         $parts = parse_url($url);
 
         if ($parts === false || ! isset($parts['host'])) {
-            throw new \InvalidArgumentException(sprintf('The "%s" value is not a valid DockTHOR server URL.', $url));
+            throw new \InvalidArgumentException(sprintf('The "%s" value is not a valid DockRay server URL.', $url));
         }
 
         $this->scheme = $parts['scheme'] ?? 'https';

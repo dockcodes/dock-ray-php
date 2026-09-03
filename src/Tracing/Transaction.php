@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Tracing;
+namespace Dock\Ray\Tracing;
 
-use Dock\Thor\Event;
-use Dock\Thor\EventId;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\HubInterface;
+use Dock\Ray\Event;
+use Dock\Ray\EventId;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\HubInterface;
 
 final class Transaction extends Span
 {
@@ -25,7 +25,7 @@ final class Transaction extends Span
     {
         parent::__construct($context);
 
-        $this->hub = $hub ?? ThorSdk::getCurrentHub();
+        $this->hub = $hub ?? RaySdk::getCurrentHub();
         $this->name = $context->getName();
     }
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 final class Response
 {

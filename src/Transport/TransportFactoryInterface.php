@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Transport;
+namespace Dock\Ray\Transport;
 
-use Dock\Thor\Options;
+use Dock\Ray\Options;
 
 interface TransportFactoryInterface
 {

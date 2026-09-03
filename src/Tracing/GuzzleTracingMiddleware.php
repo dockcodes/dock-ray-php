@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Tracing;
+namespace Dock\Ray\Tracing;
 
 use Psr\Http\Message\RequestInterface;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\HubInterface;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\HubInterface;
 
 final class GuzzleTracingMiddleware
 {
@@ -14,7 +14,7 @@ final class GuzzleTracingMiddleware
     {
         return function (callable $handler) use ($hub): \Closure {
             return function (RequestInterface $request, array $options) use ($hub, $handler) {
-                $hub = $hub ?? ThorSdk::getCurrentHub();
+                $hub = $hub ?? RaySdk::getCurrentHub();
                 $span = $hub->getSpan();
                 $childSpan = null;
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Context;
+namespace Dock\Ray\Context;
 
 final class RuntimeContext
 {

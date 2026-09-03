@@ -1,5 +1,5 @@
 /*!
- * DockTHOR browser error collector.
+ * DockRay browser error collector.
  *
  * Sends JavaScript errors to the host application, never straight to the
  * panel: authenticating from the browser would mean shipping the project
@@ -7,8 +7,8 @@
  *
  * Configured through a global object the host renders before this file:
  *
- *   window.DockThorConfig = {
- *     endpoint: '/wp-json/dockthor/v1/browser-error',
+ *   window.DockRayConfig = {
+ *     endpoint: '/wp-json/dockray/v1/browser-error',
  *     token: 'csrf-token',          // opaque, passed back to the host
  *     release: '1.4.0',             // optional
  *     sampleRate: 1,                // optional, 0..1
@@ -19,7 +19,7 @@
 (function (window, document) {
     'use strict';
 
-    var config = window.DockThorConfig;
+    var config = window.DockRayConfig;
 
     if (!config || !config.endpoint || typeof window.fetch !== 'function') {
         return;
@@ -143,7 +143,7 @@
         var result = { 'Content-Type': 'application/json' };
 
         if (config.token) {
-            result['X-DockThor-Token'] = config.token;
+            result['X-DockRay-Token'] = config.token;
         }
 
         return result;
@@ -171,7 +171,7 @@
         );
     });
 
-    window.DockThor = {
+    window.DockRay = {
         captureException: function (error) {
             report(error && error.name ? error.name : 'Error', error && error.message, error, 'manual');
         },

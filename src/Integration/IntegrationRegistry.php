@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
 use Psr\Log\LoggerInterface;
-use Dock\Thor\Options;
+use Dock\Ray\Options;
 
 final class IntegrationRegistry
 {

@@ -18,10 +18,10 @@ declare(strict_types=1);
  * limitations under the License.
 */
 
-namespace Dock\Thor\Serializer;
+namespace Dock\Ray\Serializer;
 
-use Dock\Thor\Exception\InvalidArgumentException;
-use Dock\Thor\Options;
+use Dock\Ray\Exception\InvalidArgumentException;
+use Dock\Ray\Options;
 
 abstract class AbstractSerializer
 {

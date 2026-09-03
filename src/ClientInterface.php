@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use Dock\Thor\Integration\IntegrationInterface;
-use Dock\Thor\State\Scope;
+use Dock\Ray\Integration\IntegrationInterface;
+use Dock\Ray\State\Scope;
 
 interface ClientInterface
 {

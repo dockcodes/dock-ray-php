@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
-use Dock\Thor\ErrorHandler;
-use Dock\Thor\Exception\FatalErrorException;
-use Dock\Thor\ThorSdk;
+use Dock\Ray\ErrorHandler;
+use Dock\Ray\Exception\FatalErrorException;
+use Dock\Ray\RaySdk;
 
 final class FatalErrorListenerIntegration extends AbstractErrorListenerIntegration
 {
@@ -14,7 +14,7 @@ final class FatalErrorListenerIntegration extends AbstractErrorListenerIntegrati
     {
         $errorHandler = ErrorHandler::registerOnceFatalErrorHandler();
         $errorHandler->addFatalErrorHandlerListener(static function (FatalErrorException $exception): void {
-            $currentHub = ThorSdk::getCurrentHub();
+            $currentHub = RaySdk::getCurrentHub();
             $integration = $currentHub->getIntegration(self::class);
             $client = $currentHub->getClient();
 

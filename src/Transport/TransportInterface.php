@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Transport;
+namespace Dock\Ray\Transport;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use Dock\Thor\Event;
+use Dock\Ray\Event;
 
 interface TransportInterface
 {

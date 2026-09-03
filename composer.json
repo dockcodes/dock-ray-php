@@ -1,7 +1,7 @@
 {
-  "name": "dockcodes/dock-thor",
+  "name": "dockcodes/dock-ray",
   "type": "library",
-  "description": "PHP SDK for DockTHOR — application error and performance monitoring (https://dock.codes)",
+  "description": "PHP SDK for DockRay — application error and performance monitoring (https://dock.codes)",
   "keywords": [
     "logging",
     "error-monitoring",
@@ -50,7 +50,7 @@
       "src/functions.php"
     ],
     "psr-4": {
-      "Dock\\Thor\\": "src/"
+      "Dock\\Ray\\": "src/"
     }
   },
   "conflict": {

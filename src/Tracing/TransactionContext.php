@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Tracing;
+namespace Dock\Ray\Tracing;
 
 final class TransactionContext extends SpanContext
 {
@@ -46,7 +46,7 @@ final class TransactionContext extends SpanContext
         $this->parentSampled = $parentSampled;
     }
 
-    public static function fromThorTrace(string $header)
+    public static function fromRayTrace(string $header)
     {
         $context = new self();
 

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\State;
+namespace Dock\Ray\State;
 
-use Dock\Thor\Breadcrumb;
-use Dock\Thor\Event;
-use Dock\Thor\EventHint;
-use Dock\Thor\Severity;
-use Dock\Thor\Tracing\Span;
-use Dock\Thor\Tracing\Transaction;
-use Dock\Thor\UserDataBag;
+use Dock\Ray\Breadcrumb;
+use Dock\Ray\Event;
+use Dock\Ray\EventHint;
+use Dock\Ray\Severity;
+use Dock\Ray\Tracing\Span;
+use Dock\Ray\Tracing\Transaction;
+use Dock\Ray\UserDataBag;
 
 final class Scope
 {

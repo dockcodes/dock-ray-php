@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
-use Dock\Thor\ErrorHandler;
-use Dock\Thor\ThorSdk;
+use Dock\Ray\ErrorHandler;
+use Dock\Ray\RaySdk;
 
 final class ExceptionListenerIntegration extends AbstractErrorListenerIntegration
 {
@@ -13,7 +13,7 @@ final class ExceptionListenerIntegration extends AbstractErrorListenerIntegratio
     {
         $errorHandler = ErrorHandler::registerOnceExceptionHandler();
         $errorHandler->addExceptionHandlerListener(static function (\Throwable $exception): void {
-            $currentHub = ThorSdk::getCurrentHub();
+            $currentHub = RaySdk::getCurrentHub();
             $integration = $currentHub->getIntegration(self::class);
 
             if (null === $integration) {

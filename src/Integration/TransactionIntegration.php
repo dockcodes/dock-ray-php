@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Integration;
+namespace Dock\Ray\Integration;
 
-use Dock\Thor\Event;
-use Dock\Thor\EventHint;
-use Dock\Thor\ThorSdk;
-use Dock\Thor\State\Scope;
+use Dock\Ray\Event;
+use Dock\Ray\EventHint;
+use Dock\Ray\RaySdk;
+use Dock\Ray\State\Scope;
 
 final class TransactionIntegration implements IntegrationInterface
 {
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(static function (Event $event, EventHint $hint): Event {
-            $integration = ThorSdk::getCurrentHub()->getIntegration(self::class);
+            $integration = RaySdk::getCurrentHub()->getIntegration(self::class);
 
             if (null === $integration) {
                 return $event;

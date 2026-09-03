@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor;
+namespace Dock\Ray;
 
-use Dock\Thor\State\Hub;
-use Dock\Thor\State\HubInterface;
+use Dock\Ray\State\Hub;
+use Dock\Ray\State\HubInterface;
 
-final class ThorSdk
+final class RaySdk
 {
     /**
      * @var HubInterface|null

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Dock\Thor\Browser;
+namespace Dock\Ray\Browser;
 
-use Dock\Thor\Event;
-use Dock\Thor\ExceptionDataBag;
-use Dock\Thor\EventId;
-use Dock\Thor\Frame;
-use Dock\Thor\Severity;
-use Dock\Thor\Stacktrace;
+use Dock\Ray\Event;
+use Dock\Ray\ExceptionDataBag;
+use Dock\Ray\EventId;
+use Dock\Ray\Frame;
+use Dock\Ray\Severity;
+use Dock\Ray\Stacktrace;
 
 /**
  * Zamienia zgłoszenie z przeglądarki na zdarzenie SDK.
