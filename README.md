@@ -36,8 +36,7 @@ init([
 ]);
 ```
 
-`token`, `private_key` and `url` also default to the `RAY_TOKEN`,
-`RAY_PRIVATE_KEY` and `RAY_URL` server variables, so a deployment can
+`token`, and `private_key` also default to the `RAY_TOKEN` and `RAY_PRIVATE_KEY` server variables, so a deployment can 
 configure the SDK without touching code. When either credential is missing the
 SDK stays loaded but sends nothing — it never throws for being unconfigured.
 

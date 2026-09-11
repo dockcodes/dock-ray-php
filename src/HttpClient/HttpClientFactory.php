@@ -89,7 +89,11 @@ final class HttpClientFactory implements HttpClientFactoryInterface
             throw new \RuntimeException('The "http_proxy" option requires either the "php-http/curl-client" or the "php-http/guzzle7-adapter" package to be installed.');
         }
 
-        return HttpAsyncClientDiscovery::find();
+        try {
+            return HttpAsyncClientDiscovery::find();
+        } catch (\Throwable $exception) {
+            throw new \RuntimeException('DockRay found no usable HTTP client. The SDK ships with symfony/http-client; on PHP 7.4 that client additionally needs the "php-http/message-factory" package. Installing "php-http/curl-client" or "php-http/guzzle7-adapter" also resolves this.', 0, $exception);
+        }
     }
 
     /**
