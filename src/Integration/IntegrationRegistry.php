@@ -4,8 +4,9 @@ declare(strict_types=1);
 
 namespace Dock\Ray\Integration;
 
-use Psr\Log\LoggerInterface;
 use Dock\Ray\Options;
+use Dock\Ray\Util\Compat;
+use Psr\Log\LoggerInterface;
 
 final class IntegrationRegistry
 {
@@ -85,7 +86,7 @@ final class IntegrationRegistry
             $integrations = $userIntegrations($defaultIntegrations);
 
             if (!\is_array($integrations)) {
-                throw new \UnexpectedValueException(sprintf('Expected the callback set for the "integrations" option to return a list of integrations. Got: "%s".', get_debug_type($integrations)));
+                throw new \UnexpectedValueException(sprintf('Expected the callback set for the "integrations" option to return a list of integrations. Got: "%s".', Compat::typeName($integrations)));
             }
         }
 

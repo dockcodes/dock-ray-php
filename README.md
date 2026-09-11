@@ -13,7 +13,8 @@ Framework bridges build on this package and are shipped separately:
 composer require dockcodes/dock-ray
 ```
 
-Requires PHP 8.2 or newer.
+Requires PHP 7.4 or newer (7.4, 8.0 through 8.4). The Monolog handler works
+with Monolog 1, 2 and 3.
 
 ## Configuration
 

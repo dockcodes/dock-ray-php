@@ -66,7 +66,10 @@ final class BrowserEvent
         return $event;
     }
 
-    private static function exception(string $type, string $message, mixed $stack): ExceptionDataBag
+    /**
+     * @param mixed $stack
+     */
+    private static function exception(string $type, string $message, $stack): ExceptionDataBag
     {
         return ExceptionDataBag::create($type, $message, self::stacktrace($stack));
     }
@@ -75,8 +78,10 @@ final class BrowserEvent
      * Ramki przychodzą jako tablica z kolektora; ślad z `Error.stack` bywa
      * zminifikowany i wtedy niesie tyle, co nic, więc nie próbujemy go parsować
      * po stronie serwera.
+     *
+     * @param mixed $stack
      */
-    private static function stacktrace(mixed $stack): ?Stacktrace
+    private static function stacktrace($stack): ?Stacktrace
     {
         if (! is_array($stack) || $stack === []) {
             return null;
@@ -113,7 +118,7 @@ final class BrowserEvent
     private static function isInApp(string $file): bool
     {
         foreach (['/wp-includes/', '/wp-admin/', 'node_modules', 'cdn.', 'googletagmanager', 'gtag/js'] as $vendor) {
-            if (str_contains($file, $vendor)) {
+            if (false !== strpos($file, $vendor)) {
                 return false;
             }
         }
@@ -123,16 +128,24 @@ final class BrowserEvent
 
     private static function level(string $level): Severity
     {
-        return match ($level) {
-            'debug' => Severity::debug(),
-            'info' => Severity::info(),
-            'warning' => Severity::warning(),
-            'fatal' => Severity::fatal(),
-            default => Severity::error(),
-        };
+        switch ($level) {
+            case 'debug':
+                return Severity::debug();
+            case 'info':
+                return Severity::info();
+            case 'warning':
+                return Severity::warning();
+            case 'fatal':
+                return Severity::fatal();
+            default:
+                return Severity::error();
+        }
     }
 
-    private static function text(mixed $value): string
+    /**
+     * @param mixed $value
+     */
+    private static function text($value): string
     {
         if (! is_string($value) && ! is_numeric($value)) {
             return '';

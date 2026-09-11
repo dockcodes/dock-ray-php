@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Dock\Ray;
 
-use Jean85\PrettyVersions;
 use Dock\Ray\Context\OsContext;
 use Dock\Ray\Context\RuntimeContext;
+use Dock\Ray\Util\Compat;
+use Jean85\PrettyVersions;
 
 final class Event
 {
@@ -410,7 +411,7 @@ final class Event
     {
         foreach ($exceptions as $exception) {
             if (!$exception instanceof ExceptionDataBag) {
-                throw new \UnexpectedValueException(sprintf('Expected an instance of the "%s" class. Got: "%s".', ExceptionDataBag::class, get_debug_type($exception)));
+                throw new \UnexpectedValueException(sprintf('Expected an instance of the "%s" class. Got: "%s".', ExceptionDataBag::class, Compat::typeName($exception)));
             }
         }
 

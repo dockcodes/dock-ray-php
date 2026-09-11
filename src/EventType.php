@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dock\Ray;
 
-final class EventType implements \Stringable
+final class EventType
 {
     /**
      * @var string

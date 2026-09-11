@@ -10,7 +10,12 @@ use Psr\Http\Message\RequestInterface;
 
 final class RayAuthentication implements AuthenticationInterface
 {
-    public function __construct(private readonly Options $options) {}
+    private Options $options;
+
+    public function __construct(Options $options)
+    {
+        $this->options = $options;
+    }
 
     public function authenticate(RequestInterface $request): RequestInterface
     {

@@ -11,6 +11,7 @@ use Dock\Ray\Severity;
 use Dock\Ray\Tracing\Span;
 use Dock\Ray\Tracing\Transaction;
 use Dock\Ray\UserDataBag;
+use Dock\Ray\Util\Compat;
 
 final class Scope
 {
@@ -116,7 +117,7 @@ final class Scope
     public function setUser($user): self
     {
         if (!\is_array($user) && !$user instanceof UserDataBag) {
-            throw new \TypeError(sprintf('The $user argument must be either an array or an instance of the "%s" class. Got: "%s".', UserDataBag::class, get_debug_type($user)));
+            throw new \TypeError(sprintf('The $user argument must be either an array or an instance of the "%s" class. Got: "%s".', UserDataBag::class, Compat::typeName($user)));
         }
 
         if (\is_array($user)) {

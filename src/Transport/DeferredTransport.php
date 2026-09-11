@@ -33,7 +33,12 @@ final class DeferredTransport implements TransportInterface
 
     private bool $registered = false;
 
-    public function __construct(private readonly TransportInterface $transport) {}
+    private TransportInterface $transport;
+
+    public function __construct(TransportInterface $transport)
+    {
+        $this->transport = $transport;
+    }
 
     public function send(Event $event): PromiseInterface
     {
@@ -62,7 +67,7 @@ final class DeferredTransport implements TransportInterface
         foreach ($queue as $event) {
             try {
                 $this->transport->send($event)->wait(false);
-            } catch (\Throwable) {
+            } catch (\Throwable $exception) {
                 // Wysyłka po odpowiedzi nie ma już komu zgłosić awarii.
             }
         }

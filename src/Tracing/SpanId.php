@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dock\Ray\Tracing;
 
-final class SpanId implements \Stringable
+final class SpanId
 {
     private string $value;
 

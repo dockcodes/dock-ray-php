@@ -24,14 +24,29 @@ final class HttpTransport implements TransportInterface
 {
     private LoggerInterface $logger;
 
+    private Options $options;
+
+    private HttpAsyncClientInterface $httpClient;
+
+    private StreamFactoryInterface $streamFactory;
+
+    private RequestFactoryInterface $requestFactory;
+
+    private PayloadSerializerInterface $payloadSerializer;
+
     public function __construct(
-        private readonly Options $options,
-        private readonly HttpAsyncClientInterface $httpClient,
-        private readonly StreamFactoryInterface $streamFactory,
-        private readonly RequestFactoryInterface $requestFactory,
-        private readonly PayloadSerializerInterface $payloadSerializer,
-        ?LoggerInterface $logger = null,
+        Options $options,
+        HttpAsyncClientInterface $httpClient,
+        StreamFactoryInterface $streamFactory,
+        RequestFactoryInterface $requestFactory,
+        PayloadSerializerInterface $payloadSerializer,
+        ?LoggerInterface $logger = null
     ) {
+        $this->options = $options;
+        $this->httpClient = $httpClient;
+        $this->streamFactory = $streamFactory;
+        $this->requestFactory = $requestFactory;
+        $this->payloadSerializer = $payloadSerializer;
         $this->logger = $logger ?? new NullLogger();
     }
 

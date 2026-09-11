@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dock\Ray;
 
-final class EventId implements \Stringable
+final class EventId
 {
     private string $value;
 

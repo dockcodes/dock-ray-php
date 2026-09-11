@@ -28,12 +28,25 @@ final class HttpClientFactory implements HttpClientFactoryInterface
 
     private const DEFAULT_HTTP_CONNECT_TIMEOUT = 2;
 
+    private StreamFactoryInterface $streamFactory;
+
+    private ?HttpAsyncClientInterface $httpClient;
+
+    private string $sdkIdentifier;
+
+    private string $sdkVersion;
+
     public function __construct(
-        private readonly StreamFactoryInterface $streamFactory,
-        private readonly ?HttpAsyncClientInterface $httpClient,
-        private readonly string $sdkIdentifier,
-        private readonly string $sdkVersion,
-    ) {}
+        StreamFactoryInterface $streamFactory,
+        ?HttpAsyncClientInterface $httpClient,
+        string $sdkIdentifier,
+        string $sdkVersion
+    ) {
+        $this->streamFactory = $streamFactory;
+        $this->httpClient = $httpClient;
+        $this->sdkIdentifier = $sdkIdentifier;
+        $this->sdkVersion = $sdkVersion;
+    }
 
     public function create(Options $options): HttpAsyncClientInterface
     {
@@ -64,7 +77,37 @@ final class HttpClientFactory implements HttpClientFactoryInterface
     {
         $proxy = $options->getHttpProxy();
 
-        if (class_exists(SymfonyHttplugClient::class)) {
+        $client = $this->trySymfonyClient($proxy)
+            ?? $this->tryGuzzleClient($proxy)
+            ?? $this->tryCurlClient($proxy);
+
+        if (null !== $client) {
+            return $client;
+        }
+
+        if (null !== $proxy) {
+            throw new \RuntimeException('The "http_proxy" option requires either the "php-http/curl-client" or the "php-http/guzzle7-adapter" package to be installed.');
+        }
+
+        return HttpAsyncClientDiscovery::find();
+    }
+
+    /**
+     * Żaden kandydat nie ma prawa wywrócić aplikacji.
+     *
+     * `class_exists()` uruchamia autoloader, a niektóre klasy klientów rzucają
+     * wyjątek już przy wczytaniu pliku, gdy brakuje ich własnej zależności —
+     * tak robi `HttplugClient` z symfony/http-client 5.4 bez pakietu
+     * `php-http/message-factory`. Niekompletna instalacja jednego klienta ma
+     * zejść na następnego, a nie zabić żądanie, które monitorujemy.
+     */
+    private function trySymfonyClient(?string $proxy): ?HttpAsyncClientInterface
+    {
+        try {
+            if (!class_exists(SymfonyHttplugClient::class)) {
+                return null;
+            }
+
             $config = ['max_duration' => self::DEFAULT_HTTP_TIMEOUT];
 
             if (null !== $proxy) {
@@ -72,9 +115,18 @@ final class HttpClientFactory implements HttpClientFactoryInterface
             }
 
             return new SymfonyHttplugClient(SymfonyHttpClient::create($config));
+        } catch (\Throwable $exception) {
+            return null;
         }
+    }
 
-        if (class_exists(GuzzleHttpClient::class)) {
+    private function tryGuzzleClient(?string $proxy): ?HttpAsyncClientInterface
+    {
+        try {
+            if (!class_exists(GuzzleHttpClient::class)) {
+                return null;
+            }
+
             $config = [
                 GuzzleHttpClientOptions::TIMEOUT => self::DEFAULT_HTTP_TIMEOUT,
                 GuzzleHttpClientOptions::CONNECT_TIMEOUT => self::DEFAULT_HTTP_CONNECT_TIMEOUT,
@@ -85,9 +137,18 @@ final class HttpClientFactory implements HttpClientFactoryInterface
             }
 
             return GuzzleHttpClient::createWithConfig($config);
+        } catch (\Throwable $exception) {
+            return null;
         }
+    }
 
-        if (class_exists(CurlHttpClient::class)) {
+    private function tryCurlClient(?string $proxy): ?HttpAsyncClientInterface
+    {
+        try {
+            if (!class_exists(CurlHttpClient::class)) {
+                return null;
+            }
+
             $config = [
                 \CURLOPT_TIMEOUT => self::DEFAULT_HTTP_TIMEOUT,
                 \CURLOPT_CONNECTTIMEOUT => self::DEFAULT_HTTP_CONNECT_TIMEOUT,
@@ -98,12 +159,8 @@ final class HttpClientFactory implements HttpClientFactoryInterface
             }
 
             return new CurlHttpClient(null, null, $config);
+        } catch (\Throwable $exception) {
+            return null;
         }
-
-        if (null !== $proxy) {
-            throw new \RuntimeException('The "http_proxy" option requires either the "php-http/curl-client" or the "php-http/guzzle7-adapter" package to be installed.');
-        }
-
-        return HttpAsyncClientDiscovery::find();
     }
 }

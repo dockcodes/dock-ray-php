@@ -35,7 +35,7 @@ final class Collector
         ?string $release = null,
         float $sampleRate = 1.0,
         int $maxEvents = 10,
-        array $ignore = [],
+        array $ignore = []
     ): array {
         return array_filter([
             'endpoint' => $endpoint,

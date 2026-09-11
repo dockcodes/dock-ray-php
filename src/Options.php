@@ -224,12 +224,18 @@ final class Options
         $this->set('before_breadcrumb', $callback);
     }
 
-    public function getIntegrations(): array|callable
+    /**
+     * @return array|callable
+     */
+    public function getIntegrations()
     {
         return $this->options['integrations'];
     }
 
-    public function setIntegrations(array|callable $integrations): void
+    /**
+     * @param array|callable $integrations
+     */
+    public function setIntegrations($integrations): void
     {
         $this->set('integrations', $integrations);
     }
@@ -314,7 +320,10 @@ final class Options
         $this->set('traces_sampler', $sampler);
     }
 
-    private function set(string $option, mixed $value): void
+    /**
+     * @param mixed $value
+     */
+    private function set(string $option, $value): void
     {
         $this->options = $this->resolver->resolve(array_merge($this->options, [$option => $value]));
     }
@@ -403,8 +412,10 @@ final class Options
      * tablicą pod kluczem `auth_data` albo — najczęściej — parą `token`
      * i `private_key`. Niekompletna konfiguracja daje `null`, czyli transport,
      * który niczego nie wysyła; klucz-zaślepka wysyłałby zdarzenia w próżnię.
+     *
+     * @param mixed $value
      */
-    private function normalizeAuthData(SymfonyOptions $options, mixed $value): ?AuthData
+    private function normalizeAuthData(SymfonyOptions $options, $value): ?AuthData
     {
         if ($value instanceof AuthData) {
             return $value;

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dock\Ray;
 
 use Dock\Ray\Serializer\RepresentationSerializerInterface;
+use Dock\Ray\Util\Compat;
 
 final class FrameBuilder
 {
@@ -42,7 +43,7 @@ final class FrameBuilder
         if (isset($backtraceFrame['class']) && isset($backtraceFrame['function'])) {
             $functionName = $backtraceFrame['class'];
 
-            if (str_starts_with($functionName, Frame::ANONYMOUS_CLASS_PREFIX)) {
+            if (Compat::startsWith($functionName, Frame::ANONYMOUS_CLASS_PREFIX)) {
                 $functionName = Frame::ANONYMOUS_CLASS_PREFIX . $this->stripPrefixFromFilePath(substr($backtraceFrame['class'], \strlen(Frame::ANONYMOUS_CLASS_PREFIX)));
             }
 
@@ -66,7 +67,7 @@ final class FrameBuilder
     private function stripPrefixFromFilePath(string $filePath): string
     {
         foreach ($this->options->getPrefixes() as $prefix) {
-            if (str_starts_with($filePath, $prefix)) {
+            if (Compat::startsWith($filePath, $prefix)) {
                 return mb_substr($filePath, mb_strlen($prefix));
             }
         }
@@ -80,7 +81,7 @@ final class FrameBuilder
             return false;
         }
 
-        if (null !== $functionName && str_starts_with($functionName, 'Dock\Ray\\')) {
+        if (null !== $functionName && Compat::startsWith($functionName, 'Dock\Ray\\')) {
             return false;
         }
 
@@ -90,7 +91,7 @@ final class FrameBuilder
         $isInApp = true;
 
         foreach ($excludedAppPaths as $excludedAppPath) {
-            if (str_starts_with($absoluteFilePath, $excludedAppPath)) {
+            if (Compat::startsWith($absoluteFilePath, $excludedAppPath)) {
                 $isInApp = false;
 
                 break;
@@ -98,7 +99,7 @@ final class FrameBuilder
         }
 
         foreach ($includedAppPaths as $includedAppPath) {
-            if (str_starts_with($absoluteFilePath, $includedAppPath)) {
+            if (Compat::startsWith($absoluteFilePath, $includedAppPath)) {
                 $isInApp = true;
 
                 break;

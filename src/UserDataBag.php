@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dock\Ray;
 
+use Dock\Ray\Util\Compat;
+
 /**
  * This class stores the information about the authenticated user for a request.
  */
@@ -96,7 +98,7 @@ final class UserDataBag
     public function setId($id): void
     {
         if (null !== $id && !\is_string($id) && !\is_int($id)) {
-            throw new \UnexpectedValueException(sprintf('Expected an integer or string value for the $id argument. Got: "%s".', get_debug_type($id)));
+            throw new \UnexpectedValueException(sprintf('Expected an integer or string value for the $id argument. Got: "%s".', Compat::typeName($id)));
         }
 
         $this->id = $id;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dock\Ray;
 
-final class ResponseStatus implements \Stringable
+final class ResponseStatus
 {
     /**
      * @var string

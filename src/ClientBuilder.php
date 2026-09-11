@@ -71,7 +71,7 @@ final class ClientBuilder implements ClientBuilderInterface
     {
         try {
             return PrettyVersions::getVersion('dockcodes/dock-ray')->getPrettyVersion();
-        } catch (\Throwable) {
+        } catch (\Throwable $exception) {
             return Client::SDK_VERSION;
         }
     }

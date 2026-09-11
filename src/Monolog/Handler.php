@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace Dock\Ray\Monolog;
 
-use Monolog\Handler\AbstractProcessingHandler;
-use Monolog\Logger;
-use Monolog\LogRecord;
 use Dock\Ray\Event;
 use Dock\Ray\EventHint;
 use Dock\Ray\Severity;
 use Dock\Ray\State\HubInterface;
 use Dock\Ray\State\Scope;
+use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\Logger;
 
 final class Handler extends AbstractProcessingHandler
 {
+    use CompatibilityProcessingHandlerTrait;
+
+    /**
+     * @var HubInterface
+     */
     private $hub;
 
     public function __construct(HubInterface $hub, $level = Logger::DEBUG, bool $bubble = true)
@@ -24,7 +28,10 @@ final class Handler extends AbstractProcessingHandler
         parent::__construct($level, $bubble);
     }
 
-    protected function write(LogRecord $record): void
+    /**
+     * @param array<string, mixed> $record
+     */
+    protected function doWrite(array $record): void
     {
         $event = Event::createEvent();
         $event->setLevel(self::getSeverityFromLevel($record['level']));

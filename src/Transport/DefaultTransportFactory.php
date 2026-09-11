@@ -13,12 +13,25 @@ use Psr\Log\LoggerInterface;
 
 final class DefaultTransportFactory implements TransportFactoryInterface
 {
+    private StreamFactoryInterface $streamFactory;
+
+    private RequestFactoryInterface $requestFactory;
+
+    private HttpClientFactoryInterface $httpClientFactory;
+
+    private ?LoggerInterface $logger;
+
     public function __construct(
-        private readonly StreamFactoryInterface $streamFactory,
-        private readonly RequestFactoryInterface $requestFactory,
-        private readonly HttpClientFactoryInterface $httpClientFactory,
-        private readonly ?LoggerInterface $logger = null,
-    ) {}
+        StreamFactoryInterface $streamFactory,
+        RequestFactoryInterface $requestFactory,
+        HttpClientFactoryInterface $httpClientFactory,
+        ?LoggerInterface $logger = null
+    ) {
+        $this->streamFactory = $streamFactory;
+        $this->requestFactory = $requestFactory;
+        $this->httpClientFactory = $httpClientFactory;
+        $this->logger = $logger;
+    }
 
     public function create(Options $options): TransportInterface
     {

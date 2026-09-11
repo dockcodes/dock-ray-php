@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dock\Ray;
 
+use Dock\Ray\Util\Compat;
+
 final class Stacktrace
 {
     /**
@@ -19,7 +21,7 @@ final class Stacktrace
 
         foreach ($frames as $frame) {
             if (!$frame instanceof Frame) {
-                throw new \UnexpectedValueException(sprintf('Expected an instance of the "%s" class. Got: "%s".', Frame::class, get_debug_type($frame)));
+                throw new \UnexpectedValueException(sprintf('Expected an instance of the "%s" class. Got: "%s".', Frame::class, Compat::typeName($frame)));
             }
         }
 

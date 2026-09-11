@@ -14,7 +14,7 @@ namespace Dock\Ray;
  * dockray.io zmienia się `DEFAULT_URL`, a instalacje, które podały własny
  * adres, zostają nietknięte.
  */
-final class AuthData implements \Stringable
+final class AuthData
 {
     public const DEFAULT_URL = 'https://dockray.io';
 

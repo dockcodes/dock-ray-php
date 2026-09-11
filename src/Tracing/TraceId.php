@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dock\Ray\Tracing;
 
-final class TraceId implements \Stringable
+final class TraceId
 {
     private string $value;
 

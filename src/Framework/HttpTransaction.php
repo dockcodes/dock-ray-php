@@ -25,14 +25,19 @@ final class HttpTransaction
 
     private ?Span $child = null;
 
-    private function __construct(private readonly HubInterface $hub) {}
+    private HubInterface $hub;
+
+    private function __construct(HubInterface $hub)
+    {
+        $this->hub = $hub;
+    }
 
     public static function start(
         string $name,
         string $url,
         string $method,
         ?float $startTimestamp = null,
-        ?HubInterface $hub = null,
+        ?HubInterface $hub = null
     ): self {
         $instance = new self($hub ?? RaySdk::getCurrentHub());
 
@@ -97,7 +102,10 @@ final class HttpTransaction
             return;
         }
 
-        $this->child?->finish($endTimestamp);
+        if ($this->child !== null) {
+            $this->child->finish($endTimestamp);
+        }
+
         $this->hub->setSpan($this->transaction);
 
         $this->transaction->setHttpStatus($statusCode);
@@ -114,6 +122,8 @@ final class HttpTransaction
 
     private function isTracing(): bool
     {
-        return $this->hub->getClient()?->getOptions()->isTracingEnabled() ?? false;
+        $client = $this->hub->getClient();
+
+        return null !== $client && $client->getOptions()->isTracingEnabled();
     }
 }
