@@ -15,7 +15,7 @@ use Dock\Ray\Tracing\TransactionContext;
  * Transakcja jednego żądania HTTP.
  *
  * Panel czyta z transakcji `contexts.trace.data.url`, `contexts.trace.data.method`
- * i `tags['http.status_code']` — bez kompletu tych trzech pól ingest odrzuca
+ * i `tags['http.status_code']` - bez kompletu tych trzech pól ingest odrzuca
  * zdarzenie. Każdy mostek frameworkowy składałby je sam, więc kształt zapisany
  * jest tutaj raz: mostek podaje nazwę, adres i metodę, a na końcu status.
  */
@@ -63,7 +63,7 @@ final class HttpTransaction
     }
 
     /**
-     * Dokłada podspan mierzący wycinek żądania — bootstrap frameworka,
+     * Dokłada podspan mierzący wycinek żądania - bootstrap frameworka,
      * zapytania do bazy, renderowanie widoku.
      */
     public function child(string $op, ?float $startTimestamp = null, ?float $endTimestamp = null): ?Span

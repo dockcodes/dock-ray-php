@@ -9,7 +9,7 @@ namespace Dock\Ray\Framework;
  *
  * Raportowanie kosztuje żądanie HTTP do panelu. Wykonane w trakcie obsługi
  * strony doliczyłoby ten czas do każdego błędu, który akurat zdarzył się
- * użytkownikowi — czyli spowalniało aplikację dokładnie wtedy, gdy i tak jest
+ * użytkownikowi - czyli spowalniało aplikację dokładnie wtedy, gdy i tak jest
  * źle. PHP-FPM (nginx) i LiteSpeed potrafią zamknąć połączenie i zostawić
  * proces przy pracy; tam gdzie nie potrafią, zostaje zwykłe opróżnienie
  * buforów, a wysyłka i tak dzieje się po całej obsłudze żądania.
@@ -50,7 +50,7 @@ final class ResponseFlusher
      * Ostatnia deska ratunku dla mod_php. Deklarujemy długość odpowiedzi
      * i zamykamy połączenie, żeby przeglądarka nie czekała. Bez wysłanych
      * nagłówków się nie da, a przy wielu poziomach buforowania nie wiemy, co
-     * jeszcze dopisze aplikacja — wtedy odpuszczamy i zostaje samo `flush()`.
+     * jeszcze dopisze aplikacja - wtedy odpuszczamy i zostaje samo `flush()`.
      */
     private static function closeConnectionManually(): bool
     {

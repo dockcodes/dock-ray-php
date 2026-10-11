@@ -38,7 +38,7 @@ init([
 
 `token`, and `private_key` also default to the `RAY_TOKEN` and `RAY_PRIVATE_KEY` server variables, so a deployment can 
 configure the SDK without touching code. When either credential is missing the
-SDK stays loaded but sends nothing — it never throws for being unconfigured.
+SDK stays loaded but sends nothing - it never throws for being unconfigured.
 
 ### Options worth knowing
 
@@ -95,7 +95,7 @@ request.
 
 The queue holds at most 50 events per request; beyond that new events are
 dropped, since the panel counts repeats by fingerprint anyway. Set
-`'send_after_response' => false` to send inline — the default is already
+`'send_after_response' => false` to send inline - the default is already
 `false` under CLI, where a long-running worker should not hold reports until
 the process ends.
 
@@ -145,7 +145,7 @@ if ($event !== null) {
 ```
 
 `fromArray()` returns `null` for anything it cannot make an event of, and
-truncates every string it keeps. Guard the endpoint yourself — a CSRF token, a
+truncates every string it keeps. Guard the endpoint yourself - a CSRF token, a
 body size limit and a per-IP rate limit are what the shipped plugins use.
 
 The collector caps itself as well: one report per distinct error per page view,
@@ -156,21 +156,91 @@ ten per page view by default, with `ResizeObserver loop` and cross-origin
 
 Every bridge does the same four things, and the SDK has a seam for each:
 
-1. **Boot** — call `init()` (or build a client with `ClientBuilder`) as early as
+1. **Boot** - call `init()` (or build a client with `ClientBuilder`) as early as
    the framework allows, so errors raised during bootstrap are still reported.
-2. **Report** — hand the framework's exception handler to `captureException()`.
+2. **Report** - hand the framework's exception handler to `captureException()`.
    Frameworks with a PSR-3 logger can instead register `Monolog\Handler` or any
    `LoggerInterface` decorator that forwards to the hub.
-3. **Trace** — wrap request handling in `Framework\HttpTransaction`.
-4. **Enrich** — set the user and tags on the scope, and mark framework code as
+3. **Trace** - wrap request handling in `Framework\HttpTransaction`.
+4. **Enrich** - set the user and tags on the scope, and mark framework code as
    vendor code through `in_app_exclude` so stack traces point at the
    application.
 
-Anything the framework knows better than the SDK — how to read the current
-request, who the current user is, where the application root lives — is passed
+Anything the framework knows better than the SDK - how to read the current
+request, who the current user is, where the application root lives - is passed
 in through options and the scope. Nothing in `Dock\Ray` reaches back into a
 framework.
 
 ## License
 
 MIT. See [LICENSE](LICENSE).
+
+## Opt-in vulnerability monitoring (SDK 1.4+)
+
+Inventory reporting is disabled by default and does not run while serving HTTP
+requests. It sends only the configured site URL, PHP/agent versions and names
+and versions of installed production Composer packages. DockRay matches them
+against Composer advisories and uses the project's existing vulnerability
+notifications. An installed framework, including Laravel, is a Composer package;
+this feature does not scan source code, the OS or PHP extensions.
+
+For the CLI, supply these variables through your process manager or secure cron
+environment, alongside the existing `RAY_TOKEN` and `RAY_PRIVATE_KEY`:
+
+```dotenv
+RAY_INVENTORY=true
+RAY_INVENTORY_SITE_URL=https://your-app.example.com
+# Optional: omit internal packages (comma-separated glob patterns)
+RAY_INVENTORY_EXCLUDE_PACKAGES=company/*
+```
+
+Run from the application root (Composer's `vendor/bin/dockray-inventory` proxy):
+
+```shell
+vendor/bin/dockray-inventory --force
+```
+
+Then run `vendor/bin/dockray-inventory` hourly with cron. The reporter sends an
+unchanged snapshot every 12 hours, or a changed snapshot on the next invocation.
+Use `--force` after deployment; it still respects retry backoff. Cron does not
+load `.env` automatically: configure its environment securely, and do not put
+private keys in command arguments or a world-readable crontab.
+
+For an existing custom CLI scheduler, use the same reporter directly:
+
+```php
+$reporter = new \Dock\Ray\Inventory\InventoryReporter(
+    new \Dock\Ray\Options([
+        'token' => $projectToken,
+        'private_key' => $privateKey,
+        'inventory_enabled' => true,
+        'inventory_site_url' => 'https://your-app.example.com',
+        'inventory_exclude_packages' => ['company/*'],
+    ]),
+    $applicationRoot,
+    $privateStateDirectory
+);
+$result = $reporter->report();
+```
+
+`composer.json`, `composer.lock` and `vendor/composer/installed.json` must exist.
+Only installed entries in the lock file's production `packages` list are sent:
+`packages-dev` and the root application are excluded. Private package names are
+still names: explicitly exclude internal namespaces if you do not want to share
+them. Excluded packages cannot be checked for vulnerabilities.
+
+No source, `.env`, configuration values, repository URLs, descriptions, paths or
+user data are included. Authentication uses a Bearer header over verified HTTPS,
+without redirects. There are request/response size limits, timeouts, retry
+backoff and a filesystem lock. The private state directory (0700, files 0600)
+stores only a snapshot hash and timing information. Keep it persistent and outside
+the public web root; CLI overrides are `RAY_INVENTORY_PROJECT_DIR` and
+`RAY_INVENTORY_STATE_DIR`. Multiple workers on different machines need their own
+scheduler coordination; the built-in lock is local to a filesystem.
+
+The configured site URL must match the production or development URL of the
+DockRay project. Never derive it from an incoming Host header. Missing or invalid
+Composer metadata aborts the report instead of clearing the server's inventory.
+Reports show results immediately; confirmed findings are notified by DockRay's
+existing vulnerability alert scheduler (currently every 15 minutes), subject to
+project recipients, notification configuration and duplicate suppression.

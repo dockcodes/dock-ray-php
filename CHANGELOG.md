@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Added opt-in production Composer inventory reporting, secure CLI/cron delivery,
+  package exclusions and compatibility with DockRay vulnerability alerts.
+  Intended release: 1.4.0.
+
 - Lowered the requirement to PHP 7.4: no promoted or readonly properties,
   `match`, nullsafe calls, union types or PHP 8 string functions in the source.
   `Dock\Ray\Util\Compat` replaces `str_starts_with()`, `str_contains()` and

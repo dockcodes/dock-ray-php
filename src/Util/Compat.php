@@ -9,7 +9,7 @@ namespace Dock\Ray\Util;
  *
  * SDK działa od PHP 7.4, bo tyle mają wtyczki do sklepów i CMS-ów stojące
  * u klientów. Zamiast wozić polyfill Symfony trzymamy tu trzy funkcje,
- * których naprawdę używamy — cały plik jest krótszy od jego autoloadera.
+ * których naprawdę używamy - cały plik jest krótszy od jego autoloadera.
  */
 final class Compat
 {

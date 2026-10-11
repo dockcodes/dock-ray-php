@@ -24,6 +24,21 @@ final class Options
         $this->options = $this->resolver->resolve($options);
     }
 
+    public function isInventoryEnabled(): bool
+    {
+        return $this->options['inventory_enabled'];
+    }
+
+    public function getInventorySiteUrl(): ?string
+    {
+        return $this->options['inventory_site_url'];
+    }
+
+    public function getInventoryExcludedPackages(): array
+    {
+        return $this->options['inventory_exclude_packages'];
+    }
+
     public function getSendAttempts(): int
     {
         return $this->options['send_attempts'];
@@ -362,8 +377,14 @@ final class Options
             'capture_silenced_errors' => false,
             'max_request_body_size' => 'medium',
             'class_serializers' => [],
+            'inventory_enabled' => false,
+            'inventory_site_url' => null,
+            'inventory_exclude_packages' => [],
         ]);
 
+        $resolver->setAllowedTypes('inventory_enabled', 'bool');
+        $resolver->setAllowedTypes('inventory_site_url', ['null', 'string']);
+        $resolver->setAllowedTypes('inventory_exclude_packages', 'string[]');
         $resolver->setAllowedTypes('token', ['null', 'string']);
         $resolver->setAllowedTypes('private_key', ['null', 'string']);
         $resolver->setAllowedTypes('url', 'string');
@@ -409,7 +430,7 @@ final class Options
 
     /**
      * Poświadczenia można podać na trzy sposoby: gotowym obiektem `AuthData`,
-     * tablicą pod kluczem `auth_data` albo — najczęściej — parą `token`
+     * tablicą pod kluczem `auth_data` albo - najczęściej - parą `token`
      * i `private_key`. Niekompletna konfiguracja daje `null`, czyli transport,
      * który niczego nie wysyła; klucz-zaślepka wysyłałby zdarzenia w próżnię.
      *

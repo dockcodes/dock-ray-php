@@ -10,7 +10,7 @@ namespace Dock\Ray;
  * `token` jest publicznym identyfikatorem projektu i jedzie w ścieżce adresu,
  * `privateKey` to sekret projektu wysyłany nagłówkiem `Authorization: Bearer`.
  *
- * Domyślny adres jest tu jednym miejscem dla całego SDK — przy przejściu na
+ * Domyślny adres jest tu jednym miejscem dla całego SDK - przy przejściu na
  * dockray.io zmienia się `DEFAULT_URL`, a instalacje, które podały własny
  * adres, zostają nietknięte.
  */
@@ -100,6 +100,11 @@ final class AuthData
     public function getProjectApiEndpointUrl(): string
     {
         return $this->getBaseEndpointUrl() . '/project';
+    }
+
+    public function getInventoryApiEndpointUrl(): string
+    {
+        return $this->getServerUrl() . self::API_PATH . '/' . rawurlencode($this->token) . '/inventory';
     }
 
     public function getTransactionApiEndpointUrl(): string

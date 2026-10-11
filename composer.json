@@ -1,7 +1,7 @@
 {
   "name": "dockcodes/dock-ray",
   "type": "library",
-  "description": "PHP SDK for DockRay — application error and performance monitoring (https://dock.codes)",
+  "description": "PHP SDK for DockRay - application error and performance monitoring (https://dock.codes)",
   "keywords": [
     "logging",
     "error-monitoring",
@@ -64,5 +64,11 @@
     }
   },
   "minimum-stability": "stable",
-  "prefer-stable": true
+  "prefer-stable": true,
+  "bin": [
+    "bin/dockray-inventory"
+  ],
+  "scripts": {
+    "test": "phpunit"
+  }
 }

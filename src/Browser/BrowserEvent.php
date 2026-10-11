@@ -14,7 +14,7 @@ use Dock\Ray\Stacktrace;
 /**
  * Zamienia zgłoszenie z przeglądarki na zdarzenie SDK.
  *
- * Przeglądarka nie ma jak uwierzytelnić się w panelu — klucz prywatny projektu
+ * Przeglądarka nie ma jak uwierzytelnić się w panelu - klucz prywatny projektu
  * musiałby wtedy wisieć w kodzie strony, widoczny dla każdego. Dlatego błąd JS
  * jedzie najpierw do aplikacji (WordPress, PrestaShop, Drupal, Joomla), a ta
  * przekazuje go dalej własnym kluczem. Ta klasa jest granicą między jednym

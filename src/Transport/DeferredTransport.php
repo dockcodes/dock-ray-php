@@ -23,7 +23,7 @@ final class DeferredTransport implements TransportInterface
 {
     /**
      * Żądanie, które sypie błędami setkami, nie może wyczerpać pamięci przez
-     * kolejkę raportów. Powyżej progu nowe zdarzenia są pomijane — licznik
+     * kolejkę raportów. Powyżej progu nowe zdarzenia są pomijane - licznik
      * w panelu i tak podbija je po odcisku.
      */
     private const MAX_QUEUED_EVENTS = 50;

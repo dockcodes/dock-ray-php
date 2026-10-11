@@ -35,7 +35,7 @@ final class ExceptionDataBag
     }
 
     /**
-     * Błąd, który nie jest wyjątkiem PHP — zgłoszenie z przeglądarki albo
+     * Błąd, który nie jest wyjątkiem PHP - zgłoszenie z przeglądarki albo
      * z innego środowiska uruchomieniowego. Typ jest wtedy nazwą z tamtej
      * strony (`TypeError`, `ReferenceError`), a nie klasą PHP.
      */

@@ -7,7 +7,7 @@ namespace Dock\Ray\Browser;
 /**
  * Wskazuje plik kolektora i buduje jego konfigurację.
  *
- * Skrypt leży w paczce SDK, a nie w każdej wtyczce z osobna — kopie w czterech
+ * Skrypt leży w paczce SDK, a nie w każdej wtyczce z osobna - kopie w czterech
  * repozytoriach rozjeżdżają się przy pierwszej poprawce. Wtyczka pyta o
  * ścieżkę i sama zamienia ją na adres, bo tylko ona wie, jak jej katalog
  * mapuje się na URL.

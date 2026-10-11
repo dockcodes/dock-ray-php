@@ -11,7 +11,7 @@ use Monolog\LogRecord;
  * Godzi trzy niezgodne ze sobą wersje Monologa.
  *
  * `AbstractProcessingHandler::write()` przyjmuje w Monologu 1 i 2 tablicę,
- * a w 3 obiekt `LogRecord` — sygnatury nie da się napisać raz dla obu, bo
+ * a w 3 obiekt `LogRecord` - sygnatury nie da się napisać raz dla obu, bo
  * niezgodna z rodzicem jest błędem krytycznym przy ładowaniu klasy. Dlatego
  * trait jest deklarowany warunkowo, a handler implementuje `doWrite(array)`,
  * czyli kształt wspólny dla wszystkich wersji.

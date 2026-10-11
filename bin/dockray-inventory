@@ -1,0 +1,34 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+use Dock\Ray\Inventory\InventoryReporter;
+use Dock\Ray\Options;
+
+if (PHP_SAPI !== 'cli') {
+    exit(1);
+}
+$autoload = isset($_composer_autoload_path) ? $_composer_autoload_path : dirname(__DIR__) . '/vendor/autoload.php';
+if (!is_file($autoload)) {
+    fwrite(STDERR, "DockRay: Composer autoload is unavailable.\n");
+    exit(1);
+}
+require $autoload;
+try {
+    $options = new Options([
+        'token' => getenv('RAY_TOKEN') ?: null,
+        'private_key' => getenv('RAY_PRIVATE_KEY') ?: null,
+        'url' => getenv('RAY_URL') ?: \Dock\Ray\AuthData::DEFAULT_URL,
+        'inventory_enabled' => filter_var(getenv('RAY_INVENTORY'), FILTER_VALIDATE_BOOLEAN),
+        'inventory_site_url' => getenv('RAY_INVENTORY_SITE_URL') ?: null,
+        'inventory_exclude_packages' => array_values(array_filter(array_map('trim', explode(',', getenv('RAY_INVENTORY_EXCLUDE_PACKAGES') ?: '')))),
+    ]);
+    $reporter = new InventoryReporter($options, getenv('RAY_INVENTORY_PROJECT_DIR') ?: getcwd(), getenv('RAY_INVENTORY_STATE_DIR') ?: null);
+    $result = $reporter->report(in_array('--force', $argv, true));
+    fwrite(STDOUT, 'DockRay inventory: ' . $result['status'] . "\n");
+    exit(in_array($result['status'], ['sent', 'not_due', 'disabled', 'busy', 'backoff'], true) ? 0 : 1);
+} catch (Throwable $exception) {
+    fwrite(STDERR, "DockRay inventory could not run.\n");
+    exit(1);
+}

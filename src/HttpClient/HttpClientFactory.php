@@ -100,7 +100,7 @@ final class HttpClientFactory implements HttpClientFactoryInterface
      * Żaden kandydat nie ma prawa wywrócić aplikacji.
      *
      * `class_exists()` uruchamia autoloader, a niektóre klasy klientów rzucają
-     * wyjątek już przy wczytaniu pliku, gdy brakuje ich własnej zależności —
+     * wyjątek już przy wczytaniu pliku, gdy brakuje ich własnej zależności -
      * tak robi `HttplugClient` z symfony/http-client 5.4 bez pakietu
      * `php-http/message-factory`. Niekompletna instalacja jednego klienta ma
      * zejść na następnego, a nie zabić żądanie, które monitorujemy.
