@@ -22,7 +22,7 @@ final class ComposerInventory
 
     public function collect(string $siteUrl, string $platform = 'php'): array
     {
-        if (! in_array($platform, ['php', 'laravel'], true)) {
+        if (! in_array($platform, ['php', 'laravel', 'drupal'], true)) {
             throw new RuntimeException('Unsupported inventory platform.');
         }
         $parts = parse_url($siteUrl);
@@ -67,7 +67,8 @@ final class ComposerInventory
             }
             $version = preg_replace('/^v(?=\d)/', '', $version);
             $components[$name] = ['type' => 'package', 'slug' => $name, 'version' => $version, 'active' => true];
-            if ($name === 'laravel/framework') {
+            if (($platform === 'laravel' && $name === 'laravel/framework')
+                || ($platform === 'drupal' && in_array($name, ['drupal/core', 'drupal/drupal'], true))) {
                 $frameworkVersion = $version;
             }
         }
@@ -79,7 +80,7 @@ final class ComposerInventory
 
         return [
             'schema' => 1, 'platform' => $platform,
-            'platform_version' => $platform === 'laravel' ? $frameworkVersion : PHP_VERSION,
+            'platform_version' => $platform === 'php' ? PHP_VERSION : $frameworkVersion,
             'php_version' => PHP_VERSION, 'agent_version' => Client::SDK_VERSION,
             'site_url' => $siteUrl, 'components' => array_values($components),
         ];

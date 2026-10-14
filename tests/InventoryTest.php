@@ -72,6 +72,26 @@ final class InventoryTest extends TestCase
         $this->assertSame(PHP_VERSION, $payload['php_version']);
     }
 
+    public function test_drupal_uses_installed_core_version_and_keeps_production_packages_only(): void
+    {
+        file_put_contents($this->root.'/composer.lock', json_encode([
+            'packages' => [['name' => 'drupal/core'], ['name' => 'drupal/token']],
+            'packages-dev' => [['name' => 'drupal/devel']],
+        ]));
+        file_put_contents($this->root.'/vendor/composer/installed.json', json_encode(['packages' => [
+            ['name' => 'drupal/core', 'version' => 'v10.4.0'],
+            ['name' => 'drupal/token', 'version' => '1.14.0'],
+            ['name' => 'drupal/devel', 'version' => '5.0.0'],
+        ]]));
+        $payload = (new ComposerInventory($this->root))->collect('https://app.example.com', 'drupal');
+        $this->assertSame('drupal', $payload['platform']);
+        $this->assertSame('10.4.0', $payload['platform_version']);
+        $this->assertSame(['drupal/core', 'drupal/token'], array_column($payload['components'], 'slug'));
+        $payload = (new ComposerInventory($this->root, ['drupal/core']))->collect('https://app.example.com', 'drupal');
+        $this->assertNull($payload['platform_version']);
+        $this->assertSame(['drupal/token'], array_column($payload['components'], 'slug'));
+    }
+
     public function test_disabled_and_missing_credentials_do_not_send_or_create_state(): void
     {
         $http = new MockHttpClient(function () {

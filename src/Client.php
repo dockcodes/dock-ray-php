@@ -22,7 +22,7 @@ final class Client implements ClientInterface
 
     public const SDK_IDENTIFIER = 'ray.php';
 
-    public const SDK_VERSION = '1.4.0';
+    public const SDK_VERSION = '1.5.0';
 
     /**
      * @var Options

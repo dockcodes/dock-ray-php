@@ -244,3 +244,9 @@ Composer metadata aborts the report instead of clearing the server's inventory.
 Reports show results immediately; confirmed findings are notified by DockRay's
 existing vulnerability alert scheduler (currently every 15 minutes), subject to
 project recipients, notification configuration and duplicate suppression.
+
+Drupal module 1.1+ uses SDK 1.5+ and passes `drupal` as the reporter's platform.
+The collector reports the installed `drupal/core` version as `platform_version`;
+DockRay matches Drupal core/extensions against their dedicated advisory keys,
+and other libraries against Composer. Enable inventory in the Drupal module
+settings and run Drupal cron; no separate SDK cron command is needed there.
